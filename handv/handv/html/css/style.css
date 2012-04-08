@@ -565,3 +565,21 @@ label{
 	float: left;
 	width: 100px;
 }
+
+ul{ padding:10px; }
+ul li{ margin:2px;display:inline-block; padding:0px 5px 0 10px; height:25px; overflow:hidden; line-height:25px; *display:inline;zoom:1; white-space:nowrap}
+ul li a{ float:left;  }
+ul li a.close{  width:9px; height:9px;  overflow:hidden; display:inline; visibility:hidden; margin:8px 0 0 10px;background: url(/images/close.png) no-repeat }
+ul li a.close:hover{ background-position:0 -9px; text-decoration:none}
+ul li.hover{ background:#deebf1;border-radius:5px;}
+ul li.hover a.close{ visibility:visible}
+.s0 a{ font-weight:bold}
+.s1 a{ font-size:14px;}
+.s2 a{ color:#000000}
+.s3 a{ color:#FF0000; font-weight:bold}
+.s4 a{ color:#940001}
+.s5 a{ color:#108a01}
+.s6 a{ color:#a43e00; font-weight:bold}
+.s7 a{ color:#453501}
+.s8 a{ color:#068b94; font-weight:bold}
+.s9 a{ color:#fe7201}
