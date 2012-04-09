@@ -81,7 +81,7 @@ def recentPosts(request):
     return HttpResponse(html)
 
 def recentComments(request):
-    comments = Comment.objects.filter(state='01').order_by('-addtime')   
+    comments = Comment.objects.filter(state='00').order_by('-addtime')   
     paginator = Paginator(comments,5)  
     comments = paginator.page(1) 
     html =""
