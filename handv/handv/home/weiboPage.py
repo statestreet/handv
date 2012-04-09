@@ -12,6 +12,14 @@ from django.db.models import Q
 from django.http import *
 from handv.home.models import * 
 from handv.home.page import *
+
+#handv.org的app key
+#App Key:
+#4063812394
+#App Secret:
+#52af8800f00298516c88a0f2be95a65a
+
+#现在使用的是jad系统消息借口的app_key和app_secret
 APP_KEY = '2945318614' # app key of betball
 APP_SECRET = '26540ac5e2728be53005df042bc9bc00' # app secret of betball
 CALLBACK_URL = 'http://127.0.0.1:8888/weiboLoginBack' # callback url
