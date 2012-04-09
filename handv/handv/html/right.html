@@ -1,4 +1,50 @@
-
+<script type="text/javascript">
+$.ajax({
+    type: "get",
+    url: "/tags/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+			alert("拿不到分类，请稍后再试！");
+		}else{
+			$("#cats").append(result);
+		}
+    },
+    error: function(){
+        alert("拿不到分类，请稍后再试！");
+    }
+});
+$.ajax({
+    type: "get",
+    url: "/recentPosts/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+			alert("拿不到最新文章，请稍后再试！");
+		}else{
+			$("#recentPosts").append(result);
+		}
+    },
+    error: function(){
+        alert("拿不到最新文章，请稍后再试！");
+    }
+});
+$.ajax({
+    type: "get",
+    url: "/recentComments/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+			alert("拿不到最新评论，请稍后再试！");
+		}else{
+			$("#recentComments").append(result);
+		}
+    },
+    error: function(){
+        alert("拿不到最新评论，请稍后再试！");
+    }
+});
+</script>
 		<!-- Right Column -->
 		<div id="rcnt">
 			<div id="weibo">
@@ -16,15 +62,7 @@
 			
 			<!-- Categories -->
 			<div id="cats" class="pngf"> 
-
 				<div class="categories pngf"></div>
-				
-				<a href="#">Templates</a>
-				<a href="#">Trends in design</a>
-				<a href="#">Graphics</a>
-				<a href="#">Showcases</a>
-				<a href="#">Icons</a>
-
 			</div>
 
 			<div id="cats_end" class="pngf"></div>
@@ -35,21 +73,13 @@
 				<div class="recp pngf"></div>
 
 			</div>
-
-			<a class="pl" href="#">Icon Design Tutorial: How to make calendar icon</a>
-			<a class="pl" href="#">Great use of pop music in great films</a>
-			<a class="pl" href="#">1st Anniversary and Graphics Giveaway Winners</a>
-			<a class="pl" href="#">Image Batch Processing in Adobe Fireworks</a>
-
+			<div id="recentPosts">
+			</div>
 			<!-- Recent Comments  -->
 			<div class="stit">
-
 				<div class="recc pngf"></div>
-
 			</div>
-
-			<a class="pr" href="#"><span class="prs">February 25, 2009</span>btt. Thanks. You can open the .eps file in Adobe Illustrator or Photoshop. Hope this help</a>
-			<a class="pr" href="#"><span>February 24, 2009</span>Beyond brilliance!!! Any chance of geting same icons in Sapphire? </a>
-			<a class="pr" href="#"><span>January 19, 2009</span>This set is amazing! However, it would be nice to see some these icons in normal color </a>
-
+			<div id="recentComments">
+			</div>
+			
 		</div>

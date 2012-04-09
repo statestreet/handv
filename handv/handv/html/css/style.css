@@ -202,15 +202,6 @@ h3 span {
 	height:auto;
 	margin:0 0 43px 0;
 }
-.post p {
-	line-height:15px;
-	margin:15px 0 0 147px;
-}
-.post img {
-	position:relative;
-	margin:5px 0 0 -11px;
-	border:0px none;
-}
 .more-link {
 	display:block;
 	background-position: 0px -750px;
@@ -583,3 +574,6 @@ ul li.hover a.close{ visibility:visible}
 .s7 a{ color:#453501}
 .s8 a{ color:#068b94; font-weight:bold}
 .s9 a{ color:#fe7201}
+
+.content{line-height:15px;margin:15px 0 0 147px;}
+.clr{height:1px;clear:both}

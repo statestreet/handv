@@ -28,6 +28,7 @@ class Article(models.Model):
     tag = models.CharField(max_length=200)
     addtime = models.DateTimeField() 
     title = models.CharField(max_length=200)
+    url = models.CharField(max_length=200)
     content = models.TextField(default='')
     state = models.CharField(max_length=2)
     type = models.CharField(max_length=2)

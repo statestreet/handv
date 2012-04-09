@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+</head>
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+
+		<!-- Left Column -->
+		<div id="lcnt">
+			{% for article in articles%}
+			<!-- Post -->
+			<div class="post">
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{article.addtime|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{article.addtime|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{article.addtime|date:"y"}}</span>
+					</dd>
+				</dl>
+				
+				<!-- Post Title - Permalink -->
+				<h3 class="pngf">
+					{% ifequal article.url "" %}
+					<a href="/article/{{article.id}}">{{article.title}}</a><br />
+					{% else%}
+					<a href="/article/{{article.url}}">{{article.title}}</a><br />
+					{% endifequal%}
+
+					<!-- Post Details -->
+					<span class="pngf">{{article.tag}}</span>
+				</h3>
+				<!-- Post Content -->
+				<div class="bl">3</div>
+				<div class="clr"></div>
+				<div class="content">
+				{{article.content|safe}}
+				</div>			
+				<!-- Read More -->
+				{% ifequal article.url "" %}
+				<a class="more-link pngf" href="/article/{{article.id}}"></a>
+				{% else%}
+				<a class="more-link pngf" href="/article/{{article.url}}"></a>
+				{% endifequal%}
+				<hr />
+			</div>
+			{% endfor %}
+
+		</div>
+		{% include 'right.html' %}
+		<br style="clear:both;"/>
+
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+
+</body>
+</html>

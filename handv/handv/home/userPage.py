@@ -45,10 +45,11 @@ def add(request):
 def saveAdd(request):
     title = request.POST['title']
     tag = request.POST['tag']
+    url = request.POST['url']
     content = request.POST['content']
     now = datetime.datetime.now()
     user = request.session['user']
-    article = Article(user=user,addTime=now,content=content,title=title,tag=tag,state='00',type='00')
+    article = Article(user=user,addtime=now,url=url,content=content,title=title,tag=tag,state='01',type='00')
     article.save()  
     return result("发表成功！")
 
@@ -77,13 +78,16 @@ def doLogin(request):
             if m[0].state=='0':
                 return result("帐号没有激活。请先登录邮箱或者联系一休激活帐号。")
             else:
-                request.session['user'] = m[0]
-                weibo = request.session['weibo']
-                if weibo!=None and weibo!='':
-                    user = m[0]
-                    user.weibo =weibo
-                    user.save()
-                    return result("绑定成功！")
+                try:
+                    request.session['user'] = m[0]
+                    weibo = request.session['weibo']
+                    if weibo!=None and weibo!='':
+                        user = m[0]
+                        user.weibo =weibo
+                        user.save()
+                        return result("绑定成功！")
+                except KeyError:
+                    pass
                 return home(request)
         else:
             return result("用户名或者密码错拉！")

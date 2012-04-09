@@ -90,6 +90,10 @@
 </script>
 <script type="text/javascript">
 addTag=function(name){
+	if(name==""){
+		alert("没有tag内容啊大姐");
+		return;
+	}
 	var tag = $("#tag").val();
 	if(tag.indexOf(name)>-1){
 		alert("有这个Tag了");
@@ -109,13 +113,17 @@ delTag=function(name){
 };
 $(document).ready(function(){
 	$("#addTag").click(function(){
-	var tagName = $("#tagName").val();
+	var tag_name = $("#tag_name").val();
+	if(tag_name==""){
+		alert("写点tag内容啊大姐");
+		return;
+	}
 	var tag = $("#tag").val();
-	if(tag.indexOf(tagName)>-1){
+	if(tag.indexOf(tag_name)>-1){
 		alert("有这个Tag了");
 		return;
 	}
-	if(tagName==""){
+	if(tag_name==""){
 		alert("请输入tag名称！");
 		return;
 	}
@@ -123,7 +131,7 @@ $(document).ready(function(){
             type: "get",
             url: "/addTag/",
             data: {
-                "name": tagName
+                "name": tag_name
             },
             success: function(result){
 				if(result.indexOf("error")>-1){
@@ -141,23 +149,34 @@ $(document).ready(function(){
             }
         });
 	});
-	$("#cmntfrm").submit(function(){
+	/*$("#submit").click(function(){
+		var title = $("#title").val();
+		if(title==""){
+			alert("填个标题啊大姐");
+			return;
+		}
+		if(editor.hasContents()){  //提交条件满足时提交内容
+		    editor.sync();           //此处的editor是页面实例化出来的编辑器对象
+		    content = editor.getContent();
+		}else{
+			alert("填个写点内容啊大姐");
+			return;
+		}
+	});*/
+	/*$("#cmntfrm").submit(function(){
 		var title = $("#title").val();
 		var content = $("#content").val();
 		if(title==""){
-			alert("填个标题写点内容啊大姐");
+			alert("填个标题啊大姐");
 			return;
 		}
-	});
-	$("#submit").click(function(){
-		var title = $("#title").val();
-		var content = $("#content").val();
-		if(title==""){
-			alert("填个标题写点内容啊大姐");
+		if(editor.hasContents()){  //提交条件满足时提交内容
+		    editor.sync();           //此处的editor是页面实例化出来的编辑器对象
+		}else{
+			alert("填个写点内容啊大姐");
 			return;
 		}
-		$("#cmntfrm").submit();
-	});
+	});*/
 });
 </script>
 <link rel="stylesheet" type="text/css" href="/js/ueditor/themes/default/ueditor.css"/>
@@ -213,15 +232,16 @@ $(document).ready(function(){
 			<div id="comments">
 			
 				<!-- Comment Form -->
-				<form action="/saveAdd/" method="post" id="cmntfrm">
+				<form action="/saveAdd/" method="post" id="cmntfrm" name="cmntfrm">
 					<div id="cmntfs">
 						<div class="pyct pngf"></div>
 						<input type="hidden" id="tag" name="tag"/>
 						<p><input type="text" name="title" size="22" tabindex="1" id="title"/><label>标题 <span>(required)</span></label></p>
-						<p id="categories"><input type="text" id="tagName" style="width:100px" tabindex="2" id="desc"/><button id="addTag" type="button">添加</button><label>Tag</label><ul class="clearfix" id="tags"></a></li></ul></p>
+						<p><input type="text" name="url" size="22" tabindex="1" id="url"/><label>URL <span>(字母和下划线)</span></label></p>
+						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2" id="desc"/><button id="addTag" type="button">添加</button><label>Tag</label><ul class="clearfix" id="tags"></a></li></ul></p>
 						<p><label>推荐Tag</label><ul class="clearfix">{% for tag in tags%} <li class="hover"><a href="javascript:addTag('{{tag.name}}')" class="s{{forloop.counter}}">{{tag.name}}</a></li>{% endfor %}</ul></p>
 						<p>
-							<div id="contentDiv"></div>
+							<textarea id="content" name="content">写点什么吧</textarea>
 						</p>
 						<p>
 							<input type="submit" name="submit" value="Post" tabindex="5" id="submit"/>
@@ -242,10 +262,8 @@ $(document).ready(function(){
 
 </div>
 <script type="text/javascript">
-    var editor = new baidu.editor.ui.Editor({
-        textarea:'content'
-    });
-    editor.render("contentDiv");
+	var editor = new baidu.editor.ui.Editor();
+	editor.render("content");
 </script>
 {% include 'footer.html' %}
 </body>

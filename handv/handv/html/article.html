@@ -23,34 +23,30 @@
 				<!-- Post Date -->
 				<dl class="date">
 					<dt>
-						<span>15</span>
+						<span>{{article.addtime|date:"d"}}</span>
 					</dt>
 					<dd>
-						<span>January</span>
+						<span>{{article.addtime|date:"M"}}</span>
 					</dd>
 					<dd>
-						<span>2009</span>
+						<span>{{article.addtime|date:"y"}}</span>
 					</dd>
 				</dl>
 				
 				<!-- Post Title - Permalink -->
 				<h3 class="pngf">
-					<a href="#">Building under construction</a><br />
+					<a href="#">{{article.title}}</a><br />
 
 					<!-- Post Details -->
-					<span class="pngf">Posted in graphics</span>
+					<span class="pngf">{{article.tag}}</span>
 				</h3>
 			
 				<!-- Post Content -->
 				<div class="bl">3</div>
-
-				<div class="bar"></div>			
-
-				<img src="images/post_image2.jpg" alt="photo" />
-
-				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer massa. Duis vel libero vitae leo placerat blandit. Sed a nisi ac turpis facilisis facilisis. Pellentesque ut enim. Nam mollis ante. Quisque a eros. Fusce rutrum. Donec suscipit lobortis turpis. Vivamus urna erat, dictum eget, vehicula sit amet, malesuada vel, ligula. Nam ac neque. Nullam pulvinar blandit eros. Etiam sed magna eget quam lacinia feugiat. Morbi dictum lacus eget odio. Vestibulum ut ante a mi auctor sagittis. Proin malesuada, lectus in ultricies semper, lorem nisl dictum arcu, ac porta urna urna sed dolor. Mauris ligula. Aenean tristique, nunc sit amet ornare tempus, sapien nunc laoreet erat, vel tincidunt purus sem quis justo. Donec dignissim risus quis purus. Nullam sed diam at augue vehicula.
-				</p>
+				<div class="clr"></div>
+				<div class="content">
+				{{article.content|safe}}
+				</div>			
 
 			</div>
 		
@@ -106,15 +102,14 @@
 
 				</div>
 
+				{% if session.weibo == None%}
+				先登陆sina微博再发表评论：<a href="/weiboLogin" style="height:25px"><img src="/images/sina_login_btn.png"></a>
+				{% else%}
 				<!-- Comment Form -->
 				<form action="#" method="post" id="cmntfrm">
 					<div id="cmntfs">
-
 						<div class="pyct pngf"></div>
-
-						<p><input type="text" name="author" size="22" tabindex="1" id="author"/><label>Name <span>(required)</span></label></p>
-						<p><input type="text" name="email" size="22" tabindex="2" id="email"/><label>E-mail <span>(required)</span></label></p>
-						<p><input type="text" name="url" size="22" tabindex="3" id="url"/><label>Website</label></p>
+						<p>{{session.weibo_nick}}<label>Name <span>(required)</span></label></p>
 						<p>
 							<textarea name="comment" cols="64" rows="10" tabindex="4" id="comment"></textarea>
 						</p>
@@ -123,6 +118,8 @@
 						</p>
 					</div>
 				</form>
+				{% endif%}
+				
 
 			</div>
 

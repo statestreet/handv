@@ -4,17 +4,31 @@ from django.http import *
 import md5,datetime,random,uuid
 from handv.home.mail import *
 from handv.home.models import * 
+from django.core.paginator import *
+from django.db.models import Q
 
-def index(request):  
-    articles = Article.objects.filter(state='1')
-    c = Context({'article':articles}) 
+def index(request): 
+    return articles(request,1)
+
+def articles(request,page):  
+    after_range_num = 5 
+    bevor_range_num = 4 
+    if page==None:
+        page=1
+    else:
+        page=int(page) 
+    articles = Article.objects.filter(state='01').order_by('addtime')   
+    paginator = Paginator(articles,2)  
+    try:  
+        articles = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        articles = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'articles':articles,'page_range':page_range,'session':request.session}) 
     t = loader.get_template('index.html')
-    return HttpResponse(t.render(c))
-
-def articles(request):  
-    articles = Article.objects.filter(state='1',type='00')
-    c = Context({'articles':articles}) 
-    t = loader.get_template('articles.html')
     return HttpResponse(t.render(c))
 
 def photos(request):  
@@ -23,12 +37,56 @@ def photos(request):
     t = loader.get_template('photos.html')
     return HttpResponse(t.render(c))
 
-def article(request,id):  
-    id = int(id)
-    article = Article.objects.get(id=id)
-    c = Context({'article':article}) 
+def tags(request):
+    tags = Tag.objects.all()
+    html =""
+    for tag in tags:
+        html +="<a href='/tag/"+tag.name+"'>"+tag.name+"</a>"
+    return HttpResponse(html)
+
+def tag(request,tag):
+    articles = Article.objects.filter(Q(tag__icontains=tag)).order_by('addtime')   
+    c = Context({'articles':articles,'session':request.session}) 
+    t = loader.get_template('tag_article.html')
+    return HttpResponse(t.render(c))
+
+def article(request,param):  
+    try:
+        id = int(param)
+        article = Article.objects.get(id=id)
+    except Exception,e:
+        url=str(param)
+        articles = Article.objects.filter(url=url)
+        article=articles[0]
+   
+    c = Context({'article':article,'session':request.session}) 
     t = loader.get_template('article.html')
     return HttpResponse(t.render(c))
+
+def recentPosts(request):
+    articles = Article.objects.filter(state='01').order_by('addtime')   
+    paginator = Paginator(articles,5)  
+    articles = paginator.page(1) 
+    html =""
+    for article in articles.object_list:
+        if article.url =="":
+            html +="<a class=\"pl\" href='/article/"+article.id+"'>"+article.title+"</a>"
+        else:
+            html +="<a class=\"pl\" href='/article/"+article.url+"'>"+article.title+"</a>"
+    return HttpResponse(html)
+
+def recentComments(request):
+    comments = Comment.objects.filter(state='01').order_by('addtime')   
+    paginator = Paginator(comments,5)  
+    comments = paginator.page(1) 
+    html =""
+    for comment in comments.object_list:
+        article = comment.article
+        if article.url =="":
+            html +="<a class=\"pr\" href='/article/"+article.id+"'><span class=\"prs\">"+str(comment.addtime)+"</span>"+comment.content+"</a>"
+        else:
+            html +="<a class=\"pr\" href='/article/"+article.url+"'><span class=\"prs\">"+str(comment.addtime)+"</span>"+comment.content+"</a>"
+    return HttpResponse(html)
 
 def register(request):  
     c = Context({}) 
