@@ -238,7 +238,8 @@ $(document).ready(function(){
 						<input type="hidden" id="tag" name="tag"/>
 						<p><input type="text" name="title" size="22" tabindex="1" id="title"/><label>标题 <span>(required)</span></label></p>
 						<p><input type="text" name="url" size="22" tabindex="1" id="url"/><label>URL <span>(字母和下划线)</span></label></p>
-						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2" id="desc"/><button id="addTag" type="button">添加</button><label>Tag</label><ul class="clearfix" id="tags"></a></li></ul></p>
+						<p id="uploadFile"><input type="file" id="file" style="width:210px" tabindex="2" name="file"/><button id="addFile" type="button">上传</button><label>上传图片</label></p>
+						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2"/><button id="addTag" type="button">添加</button><label>Tag</label><ul class="clearfix" id="tags"></a></li></ul></p>
 						<p><label>推荐Tag</label><ul class="clearfix">{% for tag in tags%} <li class="hover"><a href="javascript:addTag('{{tag.name}}')" class="s{{forloop.counter}}">{{tag.name}}</a></li>{% endfor %}</ul></p>
 						<p>
 							<textarea id="content" name="content">写点什么吧</textarea>

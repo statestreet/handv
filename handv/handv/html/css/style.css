@@ -575,5 +575,5 @@ ul li.hover a.close{ visibility:visible}
 .s8 a{ color:#068b94; font-weight:bold}
 .s9 a{ color:#fe7201}
 
-.content{line-height:15px;margin:15px 0 0 147px;}
+.content{line-height:15px;margin:15px 0 0 147px;height:400px;overflow:hidden}
 .clr{height:1px;clear:both}

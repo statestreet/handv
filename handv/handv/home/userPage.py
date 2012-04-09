@@ -42,6 +42,25 @@ def add(request):
     return HttpResponse(t.render(c))
 
 @interceptor
+def upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            files = request.FILES.get('picdata','')
+            for file in files:
+                filename = file.name
+            return HttpResponseRedirect('/success/url/')
+    else:
+        form = UploadFileForm()
+    return HttpResponse('error')
+
+@interceptor
+def handle_uploaded_file(f):
+    destination = open('some/file/name.txt', 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
+@interceptor
 def saveAdd(request):
     title = request.POST['title']
     tag = request.POST['tag']
@@ -100,3 +119,9 @@ def home(request):
     c = Context({'user':user,'session':request.session}) 
     t = loader.get_template('home.html')
     return HttpResponse(t.render(c))
+
+from django import forms
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file  = forms.FileField()

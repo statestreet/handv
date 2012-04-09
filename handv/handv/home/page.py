@@ -10,6 +10,11 @@ from django.db.models import Q
 def index(request): 
     return articles(request,1)
 
+def test(request): 
+    c = Context({}) 
+    t = loader.get_template('test.html')
+    return HttpResponse(t.render(c))
+
 def articles(request,page):  
     after_range_num = 5 
     bevor_range_num = 4 
