@@ -22,7 +22,7 @@ def articles(request,page):
         page=1
     else:
         page=int(page) 
-    articles = Article.objects.filter(state='01').order_by('addtime')   
+    articles = Article.objects.filter(state='01').order_by('-addtime')   
     paginator = Paginator(articles,2)  
     try:  
         articles = paginator.page(page)  
@@ -50,7 +50,7 @@ def tags(request):
     return HttpResponse(html)
 
 def tag(request,tag):
-    articles = Article.objects.filter(Q(tag__icontains=tag)).order_by('addtime')   
+    articles = Article.objects.filter(Q(tag__icontains=tag)).order_by('-addtime')   
     c = Context({'articles':articles,'session':request.session}) 
     t = loader.get_template('tag_article.html')
     return HttpResponse(t.render(c))
@@ -63,13 +63,13 @@ def article(request,param):
         url=str(param)
         articles = Article.objects.filter(url=url)
         article=articles[0]
-   
-    c = Context({'article':article,'session':request.session}) 
+    comments = Comment.objects.filter(article=article).order_by('-addtime')
+    c = Context({'article':article,'comments':comments,'session':request.session}) 
     t = loader.get_template('article.html')
     return HttpResponse(t.render(c))
 
 def recentPosts(request):
-    articles = Article.objects.filter(state='01').order_by('addtime')   
+    articles = Article.objects.filter(state='01').order_by('-addtime')   
     paginator = Paginator(articles,5)  
     articles = paginator.page(1) 
     html =""
@@ -81,7 +81,7 @@ def recentPosts(request):
     return HttpResponse(html)
 
 def recentComments(request):
-    comments = Comment.objects.filter(state='01').order_by('addtime')   
+    comments = Comment.objects.filter(state='01').order_by('-addtime')   
     paginator = Paginator(comments,5)  
     comments = paginator.page(1) 
     html =""

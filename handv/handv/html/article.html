@@ -42,76 +42,91 @@
 				</h3>
 			
 				<!-- Post Content -->
-				<div class="bl">3</div>
+				<div class="bl">{{comments|length}}</div>
 				<div class="clr"></div>
 				<div class="content">
+				<span id="adder_weibo"></span>
+				<script type="text/javascript">
+				WB2.anyWhere(function(W){
+				    W.widget.followButton({
+				        'id': "adder_weibo",'nick_name': "老蒋一休"	
+				    });
+				});
+			</script>
 				{{article.content|safe}}
 				</div>			
 
 			</div>
-		
-			<div class="cmt_nu pngf">3</div>
-
+			<div class="cmt_nu pngf">{{comments|length}}</div>
 			<div id="comments">
-			
+				{% for comment in comments%}
 				<div class="comment">
 				
 					<div class="cmmnt_hdr">
-
-						<p> 1. Designer</p>
-						<span class="cmmnt_time">February 28, 2009 11:58</span>
+						<p> {% ifequal comment.user.weibo ""%}
+						{{comment.user.name}}
+						{%else%}
+						<span id="weibo{{comment.user.weibo}}_{{comment.id}}"></span>
+						<script type="text/javascript">
+						WB2.anyWhere(function(W){
+						    W.widget.followButton({
+						        'id': "weibo{{comment.user.weibo}}_{{comment.id}}",'nick_name': "{{comment.user.weibo_nick}}"	
+						    });
+						});
+						</script>
+						{%endifequal%}
+						</p>
+						<span class="cmmnt_time">{{comment.addtime}}</span>
 
 					</div>
 
 					<div class="cmmnt_txt">
 						<div class="hbar pngf"></div>
-						Thanks for sharing. I think you guys do an awesome job. Your icons and graph- ics are awesome - and the tutorials help to keep you ahead of the competition. I like the detail of explanations and the results are a great source of inspiration. Keep it up! When I happen to need a professional icon set, I know whom to ask :)
+						{{comment.content}}
 					</div>
 
 				</div>
-
-				<div class="comment">
-				
-					<div class="cmmnt_hdr">
-
-						<p> 2. Enrico</p>
-						<span class="cmmnt_time">February 28, 2009 11:58</span>
-
-					</div>
-
-					<div class="cmmnt_txt2">
-						<div class="hbar pngf"></div>
-						I really love your graphics...i do graphics design myself but i cant seem to do these swirls..heheh..what program do you use?
-					</div>
-
-				</div>
-
-				<div class="comment">
-				
-					<div class="cmmnt_hdr">
-
-						<p> 3. Dimitri</p>
-						<span class="cmmnt_time">February 28, 2009 11:58</span>
-
-					</div>
-
-					<div class="cmmnt_txt">
-						<div class="hbar pngf"></div>
-						Your swirls are wonderfull, could you make some tutorial of your best creations !! I didn't find how to create the same background in illustor....
-					</div>
-
-				</div>
+				{% endfor%}
 
 				{% if session.weibo == None%}
-				先登陆sina微博再发表评论：<a href="/weiboLogin" style="height:25px"><img src="/images/sina_login_btn.png"></a>
+				<div id="comment_weibo_login"></div>			
+				<script type="text/javascript">WB2.anyWhere(function(W){
+				    W.widget.connectButton({
+				        id: "comment_weibo_login",
+				        type: '3,2',
+				        callback : {
+				            login:function(o){
+				                $.ajax({
+					            type: "post",
+					            url: "/weiboJsBack/",
+					            data: {
+					                "weibo":o.idstr,
+					                "weibo_nick":o.screen_name,
+					                "csrfmiddlewaretoken":getCookie('csrftoken')
+					            },
+					            success: function(result){
+									window.location.reload();
+					            },
+					            error: function(){
+					                alert("系统忙，请稍后再试！");
+					            }
+					        });
+				            },
+				            logout:function(){
+				                window.location="/logout/";
+				            }
+				        }
+				    });
+				});</script>
 				{% else%}
 				<!-- Comment Form -->
-				<form action="#" method="post" id="cmntfrm">
+				<form action="/addComment/" method="post" id="cmntfrm">
 					<div id="cmntfs">
 						<div class="pyct pngf"></div>
-						<p>{{session.weibo_nick}}<label>Name <span>(required)</span></label></p>
+						<input type="hidden" name="articleId" value="{{article.id}}"/>
+						<p>{{session.weibo_nick}}<label>Name </label></p>
 						<p>
-							<textarea name="comment" cols="64" rows="10" tabindex="4" id="comment"></textarea>
+							<textarea name="content" cols="64" rows="10" tabindex="4" id="content"></textarea>
 						</p>
 						<p>
 							<input type="submit" name="submit" value="Post comment" tabindex="5" id="submit"/>

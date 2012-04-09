@@ -45,11 +45,36 @@ $.ajax({
     }
 });
 </script>
+<div id="wb_connect_btn"></div>			
+<script type="text/javascript">WB2.anyWhere(function(W){
+    W.widget.connectButton({
+        id: "wb_connect_btn",
+        type: '3,2',
+        callback : {
+            login:function(o){
+                $.ajax({
+	            type: "post",
+	            url: "/weiboJsBack/",
+	            data: {
+	                "weibo":o.idstr,
+	                "weibo_nick":o.screen_name,
+	                "csrfmiddlewaretoken":getCookie('csrftoken')
+	            },
+	            success: function(result){
+	            },
+	            error: function(){
+	                alert("系统忙，请稍后再试！");
+	            }
+	        });
+            },
+            logout:function(){
+                window.location="/logout/";
+            }
+        }
+    });
+});</script>
 		<!-- Right Column -->
 		<div id="rcnt">
-			<div id="weibo">
-				<a href="/weiboLogin" style="height:25px"><img src="/images/sina_login_btn.png"></a>
-			</div>
 			<!-- Search form -->
 			<div id="search" class="pngf">
 

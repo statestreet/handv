@@ -10,7 +10,21 @@ logger = logging.getLogger(__name__)
 def interceptor(func):
     logger.info('interceptor function : %s ' % func.__name__);
     def wapper(request,*args,**kargs):
-        if 'user' in request.session and request.session['user']:
+        if 'user' in request.session and request.session['user'] and request.session['user'].internal==1:
+            try:
+                response =  func(request,*args,**kargs)
+                return response
+            except Exception,e:
+                print e
+                return HttpResponse("error"+str(e))
+        else:
+            return login(request)
+    return wapper
+
+def weiboInterceptor(func):
+    logger.info('interceptor function : %s ' % func.__name__);
+    def wapper(request,*args,**kargs):
+        if 'user' in request.session and request.session['user'] :
             try:
                 response =  func(request,*args,**kargs)
                 return response
@@ -60,6 +74,7 @@ def handle_uploaded_file(f):
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
+    
 @interceptor
 def saveAdd(request):
     title = request.POST['title']
@@ -89,7 +104,7 @@ def doLogin(request):
     password = request.POST['password']
     if username=='' or password=='':
         return result("请输入用户名或者密码！")
-    m = User.objects.filter(username=username,internal=0)      
+    m = User.objects.filter(username=username,internal=1)      
     pwd = md5.new(request.POST['password'])
     pwd.digest()
     if len(m)!=0:
@@ -119,6 +134,20 @@ def home(request):
     c = Context({'user':user,'session':request.session}) 
     t = loader.get_template('home.html')
     return HttpResponse(t.render(c))
+
+@weiboInterceptor
+def addComment(request):  
+    user = request.session['user']
+    articleId = request.POST['articleId']
+    article = Article.objects.get(id=int(articleId))
+    content = request.POST['content']
+    if content =="":
+        return result("哥们填点评论内容啊！")
+    else:
+        comment = Comment(user=user,article=article,addtime=datetime.datetime.now(),title="",content=content,state='00')
+        comment.save()
+        return result("发表成功啦！")
+
 
 from django import forms
 

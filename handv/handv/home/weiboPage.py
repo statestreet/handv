@@ -22,7 +22,7 @@ from handv.home.page import *
 #现在使用的是jad系统消息借口的app_key和app_secret
 APP_KEY = '2945318614' # app key of betball
 APP_SECRET = '26540ac5e2728be53005df042bc9bc00' # app secret of betball
-CALLBACK_URL = 'http://127.0.0.1:8888/weiboLoginBack' # callback url
+CALLBACK_URL = 'http://127.0.0.1:8000/weiboLoginBack' # callback url
 client = APIClient(app_key=APP_KEY, app_secret=APP_SECRET, redirect_uri=CALLBACK_URL)
 SITE_URL = 'http://www.handv.org'
 
@@ -55,17 +55,19 @@ def weiboBack(request):
     #得到用户的微博nick
     weibo_nick = weibo_user['screen_name']
     request.session['weibo_nick'] = weibo_nick
-    m = User.objects.filter(weibo=weibo,internal=0) 
+    m = User.objects.filter(weibo=weibo) 
     if len(m)!=0:
         user = m[0]
         request.session['user'] = user
         user.weibo_nick=weibo_nick
         user.save()
-        return HttpResponseRedirect("/home")
+        return HttpResponseRedirect("/")
     else:
-        c = Context({'info':'请先登陆绑定帐号先','session':request.session}) 
-        t = loader.get_template('login.html')
-        return HttpResponse(t.render(c))
+        code = str(uuid.uuid1())
+        user = User(name=weibo_nick,username=weibo,regtime=datetime.datetime.now(),state='0',internal=0,code=code)
+        user.save()
+        request.session['user'] = user
+        return HttpResponseRedirect("/") 
 
 def bind(request): 
     m = User.objects.filter(username=request.POST['username'])      
@@ -82,4 +84,23 @@ def bind(request):
         else:
             return result("伊用户名密码错了。。先注册下吧.")
     else:
-        return result("伊用户名密码错了。。先注册下吧.")      
+        return result("伊用户名密码错了。。先注册下吧.")   
+    
+def weiboJsBack(request):
+    weibo = request.POST['weibo']
+    weibo_nick = request.POST['weibo_nick']
+    request.session['weibo'] = weibo
+    request.session['weibo_nick'] = weibo_nick
+    m = User.objects.filter(weibo=weibo) 
+    if len(m)!=0:
+        user = m[0]
+        request.session['user'] = user
+        user.weibo_nick=weibo_nick
+        user.save()
+        return HttpResponse("success")
+    else:
+        code = str(uuid.uuid1())
+        user = User(name=weibo_nick,weibo_nick=weibo_nick,username=weibo,weibo=weibo,regtime=datetime.datetime.now(),state='0',internal=0,code=code)
+        user.save()
+        request.session['user'] = user
+        return HttpResponse("success")
