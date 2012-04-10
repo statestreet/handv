@@ -71,7 +71,7 @@
 			<a class="pag_num pngf" href="/articles/{{p}}">{{p}}</a>
 			{% endifequal %}  
 			{% endfor %}
-			{% if articles.number < page_range %}  
+			{% if articles.number < articles.paginator.num_pages %}  
 			<a class="next pngf" href="/articles/{{articles.next_page_number}}"></a>
 			{% endif %}  
 			</div>

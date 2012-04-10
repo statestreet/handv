@@ -5,6 +5,8 @@ from handv.home.models import *
 import logging
 import md5
 from handv.home.page import *
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 def interceptor(func):
@@ -56,35 +58,55 @@ def add(request):
     return HttpResponse(t.render(c))
 
 @interceptor
-def upload(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            files = request.FILES.get('picdata','')
-            for file in files:
-                filename = file.name
-            return HttpResponseRedirect('/success/url/')
-    else:
-        form = UploadFileForm()
-    return HttpResponse('error')
+def upload(request):  
+    now = datetime.datetime.now()
+    c = Context({'now':now,'session':request.session}) 
+    t = loader.get_template('upload.html')
+    return HttpResponse(t.render(c))
 
 @interceptor
+def doUpload(request):
+    form = UploadFileForm(request.POST, request.FILES)
+    if form.is_valid():
+        f = request.FILES['fileToUpload']
+        filepath = handle_uploaded_file(f)
+        return HttpResponse("{msg:'"+filepath+"'}")
+    else:
+        return HttpResponse("{error:'没有文件和描述啊大姐'}")
+
 def handle_uploaded_file(f):
-    destination = open('some/file/name.txt', 'wb+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
+    now = datetime.datetime.now()
+    filedir = "/files/"+str(now.year)+"/"+str(now.month)+"/"
+    filename=filedir+str(uuid.uuid1())+f.name
+    fname = os.path.dirname(globals()["__file__"])+filename
+    if os.path.exists(fname):  #判断文件夹是否存在
+        os.remove(fname)
+    dirs= os.path.dirname(fname)  #如果fname是完整路径 则输出完整的 否则为空
+    if not os.path.exists(dirs):  #判断这个路径是否存在
+        os.makedirs(dirs)   #如果不存在则创建这个目录
+    if os.path.isfile(fname):  #判断是否为文件，是true,不是False,
+        os.remove(fname) 
+    fp = open(fname, 'wb')  #读写打开这个要上传的文件
+    for content in f.chunks(): #写
+        fp.write(content)
+    fp.close()
+    return filename
     
 @interceptor
 def saveAdd(request):
     title = request.POST['title']
+    att = request.POST['atts']
     tag = request.POST['tag']
     url = request.POST['url']
     content = request.POST['content']
     now = datetime.datetime.now()
     user = request.session['user']
     article = Article(user=user,addtime=now,url=url,content=content,title=title,tag=tag,state='01',type='00')
+    atts = att.split(',')
     article.save()  
+    for filepath in atts:
+        attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),type="00")
+        attachment.save()
     return result("发表成功！")
 
 @interceptor
@@ -147,10 +169,7 @@ def addComment(request):
         comment = Comment(user=user,article=article,addtime=datetime.datetime.now(),title="",content=content,state='00')
         comment.save()
         return result("发表成功啦！")
-
-
+    
 from django import forms
-
 class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
-    file  = forms.FileField()
+    fileToUpload = forms.FileField()

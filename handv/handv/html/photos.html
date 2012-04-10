@@ -15,100 +15,48 @@
 
 		<!-- Left Column -->
 		<div id="lcnt">
-			
+			{% for photo in photos.object_list%}
 			<!-- Post -->
 			<div class="post">
-				
 				<!-- Post Date -->
 				<dl class="date">
 					<dt>
-						<span>15</span>
+						<span>{{photo.addtime|date:"d"}}</span>
 					</dt>
 					<dd>
-						<span>January</span>
+						<span>{{photo.addtime|date:"M"}}</span>
 					</dd>
 					<dd>
-						<span>2009</span>
+						<span>{{photo.addtime|date:"y"}}</span>
 					</dd>
 				</dl>
-				
-				<!-- Post Title - Permalink -->
-				<h3 class="pngf">
-					<a href="article.html">Building under construction</a><br />
-
-					<!-- Post Details -->
-					<span class="pngf">Posted in graphics</span>
-				</h3>
-			
-				<!-- Post Content -->
-				<div class="bl">3</div>
-
-				<div class="bar"></div>			
-				<a href="article.html">
-				<img src="images/post_image2.jpg" alt="pi2" />
-				</a>
-				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer massa. Duis vel libero vitae leo placerat blandit. Sed a nisi ac turpis facilisis facilisis. Pellentesque ut enim. Nam mollis ante. Quisque a eros. Fusce rutrum. Donec suscipit lobortis turpis. Vivamus urna erat, dictum eget, vehicula sit amet, malesuada vel, ligula. Nam ac neque. Nullam pulvinar blandit eros. Etiam sed magna eget quam lacinia feugiat. Morbi dictum lacus eget odio. Vestibulum ut ante a mi auctor sagittis. Proin malesuada, lectus in ultricies semper, lorem nisl dictum arcu, ac porta urna urna sed dolor. Mauris ligula. Aenean tristique, nunc sit amet ornare tempus, sapien nunc laoreet erat, vel tincidunt purus sem quis justo. Donec dignissim risus quis purus. Nullam sed diam at augue vehicula.
-				</p>
-				
-				<!-- Read More -->
-				<a class="more-link pngf" href="#"></a>
-				
+				<div class="content">
+				{% ifequal photo.article.url "" %}
+					<a href="/article/{{photo.article.id}}"><img src="{{photo.filepath}}"/></a>
+					{% else%}
+					<a href="/article/{{photo.article.url}}"><img src="{{photo.filepath}}"/></a>
+					{% endifequal%}
+				</div>			
 				<hr />
 
 			</div>
-
-			<!-- Post -->
-			<div class="post">
-
-				<!-- Post Date -->
-				<dl class="date">
-					<dt>
-						<span>14</span>
-					</dt>
-					<dd>
-						<span>January</span>
-					</dd>
-					<dd>
-						<span>2009</span>
-					</dd>
-				</dl>
-
-				<!-- Post Title - Permalink -->
-				<h3 class="pngf">
-					<a href="#">Grungy in love</a><br />
-
-					<!-- Post Details -->
-					<span class="pngf">Posted in graphics</span>
-				</h3>
-			
-				<!-- Post Content -->
-				<div class="bl">64</div>
-
-				<div class="bar"></div>			
-
-				<img src="images/post_image3.jpg" alt="pi3" />
-
-				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer massa. Duis vel libero vitae leo placerat blandit. Sed a nisi ac turpis facilisis facilisis. Pellentesque ut enim. Nam mollis ante. Quisque a eros. Fusce rutrum. Donec suscipit lobortis turpis. Vivamus urna erat, dictum eget, vehicula sit amet, malesuada vel, ligula. Nam ac neque. Nullam pulvinar blandit eros. Etiam sed magna eget quam lacinia feugiat. Morbi dictum lacus eget odio. Vestibulum ut ante a mi auctor sagittis. Proin malesuada, lectus in ultricies semper, lorem nisl dictum arcu, ac porta urna urna sed dolor. Proin malesuada, lectus in ultricies semper, lorem nisl dictum arcu, ac porta urna urna sed dolor.
-				</p>
-				
-				<!-- Read More -->
-				<a class="more-link pngf" href="#"></a>
-				
-				<hr />
-			
-			</div>
+			{% endfor %}
 
 			<!-- Pagination -->
 			<div id="pagination">
-				<a class="prev_active pngf" href="#"></a>
-				<a class="pag_num pngf" href="#">1</a>
-				<span class="pag_num_act pngf">2</span>
-				<a class="pag_num pngf" href="#">3</a>
-				<a class="pag_num pngf" href="#">4</a>
-				<a class="next pngf" href="#"></a>
-
+			{% if photos.number > 1%}  
+			<a class="prev_active pngf" href="/photos/{{photos.previous_page_number}}"></a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p photos.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/photos/{{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if photos.number < photos.paginator.num_pages %}  
+			<a class="next pngf" href="/photos/{{photos.next_page_number}}"></a>
+			{% endif %}  
 			</div>
 
 		</div>

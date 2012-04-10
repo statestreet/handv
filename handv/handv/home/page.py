@@ -36,9 +36,27 @@ def articles(request,page):
     t = loader.get_template('index.html')
     return HttpResponse(t.render(c))
 
-def photos(request):  
-    articles = Article.objects.filter(state='1',type='01')
-    c = Context({'articles':articles}) 
+def photo(request):
+    return photos(request,1)
+
+def photos(request,page):  
+    after_range_num = 5 
+    bevor_range_num = 4 
+    if page==None:
+        page=1
+    else:
+        page=int(page) 
+    photos = Attachment.objects.filter(type='00').order_by('-addtime')   
+    paginator = Paginator(photos,4)  
+    try:  
+        photos = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        photos = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'photos':photos,'page_range':page_range,'session':request.session}) 
     t = loader.get_template('photos.html')
     return HttpResponse(t.render(c))
 
