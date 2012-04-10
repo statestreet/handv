@@ -1,0 +1,43 @@
+<script type="text/javascript">
+$.ajax({
+    type: "get",
+    url: "/recentPosts/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+		}else{
+			$("#recentPosts").append(result);
+		}
+    },
+    error: function(){
+    }
+});
+$.ajax({
+    type: "get",
+    url: "/recentComments/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+		}else{
+			$("#recentComments").append(result);
+		}
+    },
+    error: function(){
+    }
+});
+</script>
+<!-- Recent Posts  -->
+<div class="stit">
+
+	<div class="recp pngf"></div>
+
+</div>
+<div id="recentPosts">
+</div>
+<!-- Recent Comments  -->
+<div class="stit">
+	<div class="recc pngf"></div>
+</div>
+<div id="recentComments">
+</div>
+			

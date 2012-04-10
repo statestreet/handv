@@ -5,43 +5,11 @@ $.ajax({
     data: {},
     success: function(result){
 		if(result.indexOf("error")>-1){
-			alert("拿不到分类，请稍后再试！");
 		}else{
 			$("#cats").append(result);
 		}
     },
     error: function(){
-        alert("拿不到分类，请稍后再试！");
-    }
-});
-$.ajax({
-    type: "get",
-    url: "/recentPosts/",
-    data: {},
-    success: function(result){
-		if(result.indexOf("error")>-1){
-			alert("拿不到最新文章，请稍后再试！");
-		}else{
-			$("#recentPosts").append(result);
-		}
-    },
-    error: function(){
-        alert("拿不到最新文章，请稍后再试！");
-    }
-});
-$.ajax({
-    type: "get",
-    url: "/recentComments/",
-    data: {},
-    success: function(result){
-		if(result.indexOf("error")>-1){
-			alert("拿不到最新评论，请稍后再试！");
-		}else{
-			$("#recentComments").append(result);
-		}
-    },
-    error: function(){
-        alert("拿不到最新评论，请稍后再试！");
     }
 });
 </script>
@@ -63,7 +31,6 @@ $.ajax({
 	            success: function(result){
 	            },
 	            error: function(){
-	                alert("系统忙，请稍后再试！");
 	            }
 	        });
             },
@@ -91,20 +58,6 @@ $.ajax({
 			</div>
 
 			<div id="cats_end" class="pngf"></div>
-		
-			<!-- Recent Posts  -->
-			<div class="stit">
-
-				<div class="recp pngf"></div>
-
-			</div>
-			<div id="recentPosts">
-			</div>
-			<!-- Recent Comments  -->
-			<div class="stit">
-				<div class="recc pngf"></div>
-			</div>
-			<div id="recentComments">
-			</div>
+			{% include 'recent.html' %}
 			
 		</div>
