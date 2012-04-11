@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+<script type="text/javascript">
+	delComment=function(id){
+		if(confirm("确定要删除？")){
+			$.ajax({
+	            type: "get",
+	            url: "/delComment/"+id,
+	            data: {
+	            },
+	            success: function(result){
+					$("#comment"+id).remove();
+	            },
+	            error: function(){
+	                alert("系统忙，请稍后再试！");
+	            }
+	        });
+		}
+	}
+
+</script>
+</head>
+
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+		<!-- Left Column -->
+		<div id="lcnt">
+			<!-- Post -->
+			<div class="post">
+				
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{now|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{now|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{now|date:"Y"}}</span>
+					</dd>
+				</dl>
+				
+				<!-- Post Title - Permalink -->
+				<h3 class="pngf">
+					<a href="#">选择要删除的评论</a><br />
+
+					<!-- Post Details -->
+					<span class="pngf">随便删除啊</span>
+				</h3>
+			</div>
+		
+			<div class="cmt_nu pngf">{{comments.object_list|length}}</div>
+			<div id="comments">
+				{% for comment in comments.object_list%}
+				<div class="comment" id="comment{{comment.id}}">
+				
+					<div class="cmmnt_hdr">
+						<p> {% ifequal comment.user.weibo ""%}
+						{{comment.user.name}}
+						{%else%}
+						<span id="weibo{{comment.user.weibo}}_{{comment.id}}"></span>
+						<script type="text/javascript">
+						WB2.anyWhere(function(W){
+						    W.widget.followButton({
+						        'id': "weibo{{comment.user.weibo}}_{{comment.id}}",'nick_name': "{{comment.user.weibo_nick}}"	
+						    });
+						});
+						</script>
+						{%endifequal%}
+						来自：{% ifequal comment.article.url "" %}
+					<a href="/article/{{comment.article.id}}">{{comment.article.title}}</a><br />
+					{% else%}
+					<a href="/article/{{comment.article.url}}">{{comment.article.title}}</a><br />
+					{% endifequal%}
+						</p>
+						<span class="cmmnt_time">{{comment.addtime}}</span>
+
+					</div>
+
+					<div class="cmmnt_txt">
+						<div class="hbar pngf"><a href="javascript:void(0)" onclick="delComment('{{comment.id}}')">删除</a></div>
+						{{comment.content}}
+					</div>
+
+				</div>
+				{% endfor%}
+
+			<!-- Pagination -->
+			<div id="pagination">
+			{% if comments.number > 1%}  
+			<a class="prev_active pngf" href="/commentAdmin/page={{comments.previous_page_number}}"></a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p comments.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/commentAdmin/page={{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if comments.number < comments.paginator.num_pages %}  
+			<a class="next pngf" href="/commentAdmin/page={{comments.next_page_number}}"></a>
+			{% endif %}  
+			</div>
+
+		</div></div>
+		{% include 'user_right.html' %}
+		<br style="clear:both;"/>
+
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+
+</body>
+</html>

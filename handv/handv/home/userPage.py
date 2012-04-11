@@ -13,12 +13,8 @@ def interceptor(func):
     logger.info('interceptor function : %s ' % func.__name__);
     def wapper(request,*args,**kargs):
         if 'user' in request.session and request.session['user'] and request.session['user'].internal==1:
-            try:
-                response =  func(request,*args,**kargs)
-                return response
-            except Exception,e:
-                print e
-                return HttpResponse("error"+str(e))
+            response =  func(request,*args,**kargs)
+            return response
         else:
             return login(request)
     return wapper
@@ -27,12 +23,8 @@ def weiboInterceptor(func):
     logger.info('interceptor function : %s ' % func.__name__);
     def wapper(request,*args,**kargs):
         if 'user' in request.session and request.session['user'] :
-            try:
-                response =  func(request,*args,**kargs)
-                return response
-            except Exception,e:
-                print e
-                return HttpResponse("error"+str(e))
+            response =  func(request,*args,**kargs)
+            return response
         else:
             return login(request)
     return wapper
@@ -52,7 +44,7 @@ def logout(request):
 @interceptor
 def add(request):  
     now = datetime.datetime.now()
-    tags = Tag.objects.all()
+    tags = Tag.objects.filter(state="01")
     c = Context({'now':now,'tags':tags,'session':request.session}) 
     t = loader.get_template('add.html')
     return HttpResponse(t.render(c))
@@ -99,6 +91,10 @@ def addArticle(request):
     tag = request.POST['tag']
     url = request.POST['url']
     content = request.POST['content']
+    if url!="":
+        articles = Article.objects.filter(url=url,state='01')
+        if len(articles)>0:
+            return result("url被使用过了！")
     if title=="" or content=="":
         return result("没有标题或内容啊！") 
     now = datetime.datetime.now()
@@ -110,6 +106,33 @@ def addArticle(request):
         attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),type="00")
         attachment.save()
     return result("发表成功！")
+    
+@interceptor
+def saveEdit(request):
+    id = int(request.POST['id'])
+    title = request.POST['title']
+    att = request.POST['atts']
+    tag = request.POST['tag']
+    url = request.POST['url']
+    content = request.POST['content']
+    if url!="":
+        articles = Article.objects.filter(url=url,state='01').exclude(id=id)
+        if len(articles)>0:
+            return result("url被使用过了！")
+    if title=="" or content=="":
+        return result("没有标题或内容啊！") 
+    article = Article.objects.get(id=id) 
+    user = request.session['user']
+    article.tag = tag
+    article.title = title
+    article.url = url
+    article.content = content
+    atts = att.split(',')
+    article.save()  
+    for filepath in atts:
+        attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),type="00")
+        attachment.save()
+    return result("修改成功！")
 
 @interceptor
 def addTag(request):
@@ -117,7 +140,7 @@ def addTag(request):
     tags = Tag.objects.filter(name=name)
     user = request.session['user']
     if len(tags)==0:
-        tag = Tag(name=name,user=user,desc='',type='00',state='00')
+        tag = Tag(name=name,user=user,desc='',type='00',state='01')
         tag.save()
         return HttpResponse(name)
     else:
@@ -169,10 +192,99 @@ def addComment(request):
     if content =="":
         return result("哥们填点评论内容啊！")
     else:
-        comment = Comment(user=user,article=article,addtime=datetime.datetime.now(),title="",content=content,state='00')
+        comment = Comment(user=user,article=article,addtime=datetime.datetime.now(),title="",content=content,state='01')
         comment.save()
         return result("发表成功啦！")
     
+@interceptor
+def articleAdmin(request):  
+    page = 1
+    try:
+        page = int(request.POST['page']) 
+    except Exception:
+        pass
+    after_range_num = 5 
+    bevor_range_num = 4 
+    articles = Article.objects.filter(state='01').order_by('-addtime')   
+    paginator = Paginator(articles,20)  
+    try:  
+        articles = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        articles = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'articles':articles,'page_range':page_range,'session':request.session}) 
+    t = loader.get_template('admin_article.html')
+    return HttpResponse(t.render(c))
+
+@interceptor
+def commentAdmin(request):  
+    page = 1
+    try:
+        page = int(request.POST['page']) 
+    except Exception:
+        pass
+    after_range_num = 5 
+    bevor_range_num = 4 
+    comments = Comment.objects.filter(state='01').order_by('-addtime')   
+    paginator = Paginator(comments,20)  
+    try:  
+        comments = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        comments = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'now':datetime.datetime.now(),'comments':comments,'page_range':page_range,'session':request.session}) 
+    t = loader.get_template('admin_comment.html')
+    return HttpResponse(t.render(c))
+  
+@interceptor
+def tagAdmin(request):  
+    tags = Tag.objects.filter(state="01")
+    c = Context({'now':datetime.datetime.now(),'tags':tags,'session':request.session}) 
+    t = loader.get_template('admin_tag.html')
+    return HttpResponse(t.render(c))
+  
+@interceptor
+def editArticle(request,id):  
+    id = int(id)
+    article = Article.objects.get(id=id) 
+    hadTags = article.tag.split(' ')
+    tags = Tag.objects.filter(state="01")
+    comments = Comment.objects.filter(article=article).order_by('-addtime')
+    c = Context({'article':article,'tags':tags,'hadTags':hadTags,'comments':comments,'session':request.session}) 
+    t = loader.get_template('edit.html')
+    return HttpResponse(t.render(c))
+
+@interceptor
+def delArticle(request,id):  
+    id = int(id)
+    article = Article.objects.get(id=id) 
+    article.state='02'
+    article.save()
+    return HttpResponse("删除成功！")
+
+@interceptor
+def delTag(request,name):  
+    name = str(name)
+    tags = Tag.objects.filter(name=name)
+    for tag in tags: 
+        tag.state='02'
+        tag.save()
+    return HttpResponse("删除成功！")
+
+@interceptor
+def delComment(request,id):  
+    id = int(id)
+    article = Comment.objects.get(id=id) 
+    article.state='02'
+    article.save()
+    return HttpResponse("删除成功！")
+
 from django import forms
 class UploadFileForm(forms.Form):
     fileToUpload = forms.FileField()

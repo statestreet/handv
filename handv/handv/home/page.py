@@ -46,7 +46,7 @@ def photos(request,page):
         page=1
     else:
         page=int(page) 
-    photos = Attachment.objects.filter(type='00').order_by('-addtime')   
+    photos = Attachment.objects.filter(type='00',state='01').order_by('-addtime')   
     paginator = Paginator(photos,4)  
     try:  
         photos = paginator.page(page)  
@@ -61,14 +61,14 @@ def photos(request,page):
     return HttpResponse(t.render(c))
 
 def tags(request):
-    tags = Tag.objects.all()
+    tags = Tag.objects.filter(state="01")
     html =""
     for tag in tags:
         html +="<a href='/tag/"+tag.name+"'>"+tag.name+"</a>"
     return HttpResponse(html)
 
 def tag(request,tag):
-    articles = Article.objects.filter(Q(tag__icontains=tag)).order_by('-addtime')   
+    articles = Article.objects.filter(Q(tag__icontains=tag)&Q(state='01')).order_by('-addtime')   
     c = Context({'articles':articles,'session':request.session}) 
     t = loader.get_template('tag_article.html')
     return HttpResponse(t.render(c))
@@ -99,7 +99,7 @@ def recentPosts(request):
     return HttpResponse(html)
 
 def recentComments(request):
-    comments = Comment.objects.filter(state='00').order_by('-addtime')   
+    comments = Comment.objects.filter(state='01').order_by('-addtime')   
     paginator = Paginator(comments,5)  
     comments = paginator.page(1) 
     html =""

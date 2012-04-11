@@ -149,36 +149,7 @@ $(document).ready(function(){
                 alert("系统忙，请稍后再试！");
             }
         });
-	});
-	/*$("#submit").click(function(){
-		var title = $("#title").val();
-		if(title==""){
-			alert("填个标题啊大姐");
-			return;
-		}
-		if(editor.hasContents()){  //提交条件满足时提交内容
-		    editor.sync();           //此处的editor是页面实例化出来的编辑器对象
-		    content = editor.getContent();
-		}else{
-			alert("填个写点内容啊大姐");
-			return;
-		}
-	});*/
-	/*$("#cmntfrm").submit(function(){
-		var title = $("#title").val();
-		var content = $("#content").val();
-		if(title==""){
-			alert("填个标题啊大姐");
-			return;
-		}
-		if(editor.hasContents()){  //提交条件满足时提交内容
-		    editor.sync();           //此处的editor是页面实例化出来的编辑器对象
-		}else{
-			alert("填个写点内容啊大姐");
-			return;
-		}
-	});*/
-});
+	});});
 </script>
 <script type="text/javascript">
 	function ajaxFileUpload()
@@ -281,19 +252,19 @@ $(document).ready(function(){
 				<!-- Post Date -->
 				<dl class="date">
 					<dt>
-						<span>{{now|date:"d"}}</span>
+						<span>{{article.addtime|date:"d"}}</span>
 					</dt>
 					<dd>
-						<span>{{now|date:"M"}}</span>
+						<span>{{article.addtime|date:"M"}}</span>
 					</dd>
 					<dd>
-						<span>{{now|date:"Y"}}</span>
+						<span>{{article.addtime|date:"Y"}}</span>
 					</dd>
 				</dl>
 				
 				<!-- Post Title - Permalink -->
 				<h3 class="pngf">
-					<a href="#">发表文章/图片</a><br />
+					<a href="#">修改文章</a><br />
 					<!-- Post Details -->
 					<span class="pngf">Posted in Articles</span>
 				</h3>
@@ -301,25 +272,30 @@ $(document).ready(function(){
 			<div id="comments">
 			
 				<!-- Comment Form -->
-				<form action="/saveAdd/" method="post" id="cmntfrm" name="cmntfrm">
+				<form action="/saveEdit/" method="post" id="cmntfrm" name="cmntfrm">
 					<div id="cmntfs">
 						<div class="pyct pngf"></div>
-						<input type="hidden" id="tag" name="tag"/>
+						<input type="hidden" id="id" name="id" value="{{article.id}}"/>
+						<input type="hidden" id="tag" name="tag" value="{{article.tag}}"/>
 						<input type="hidden" id="atts" name="atts"/>
 						<p id="uploadFile"><input type="file" id="fileToUpload" name="fileToUpload" style="width:210px" tabindex="2" name="file"/><button id="addFile" type="button" onclick="return ajaxFileUpload();">上传</button><img id="loading" src="/images/loading.gif" style="display:none;"><label>上传图片</label></p>
-						<p><input type="text" name="title" size="22" tabindex="1" id="title"/><label>标题 <span>(required)</span></label></p>
-						<p><input type="text" name="url" size="22" tabindex="1" id="url"/><label>URL <span>(字母和下划线)</span></label></p>
-						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2"/><button id="addTag" type="button">添加</button><label>Tag</label><ul class="clearfix" id="tags"></a></li></ul></p>
+						<p><input type="text" name="title" size="22" tabindex="1" id="title" value="{{article.title}}"/><label>标题 <span>(required)</span></label></p>
+						<p><input type="text" name="url" size="22" tabindex="1" id="url" value="{{article.url}}"/><label>URL <span>(字母和下划线)</span></label></p>
+						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2"/><button id="addTag" type="button">添加</button><label>Tag</label>
+						<ul class="clearfix" id="tags">
+							{% for tag in hadTags%}
+							<li id="tag{{tag}}" class="s5 hover"><a href="javascript:void(0)">{{tag}} </a><a href="javascript:void(0)" onclick="delTag('{{tag}}')" class="close" title="删除"></a></li>
+							{% endfor %}
+						</ul></p>
 						<p><label>推荐Tag</label><ul class="clearfix">{% for tag in tags%} <li class="hover"><a href="javascript:addTag('{{tag.name}}')" class="s{{forloop.counter}}">{{tag.name}}</a></li>{% endfor %}</ul></p>
 						<p>
-							<textarea id="content" name="content">写点什么吧</textarea>
+							<textarea id="content" name="content">{{article.content}}</textarea>
 						</p>
 						<p>
 							<input type="submit" name="submit" value="Post" tabindex="5" id="submit"/>
 						</p>
 					</div>
 				</form>
-
 
 			</div>
 

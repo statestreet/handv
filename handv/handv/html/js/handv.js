@@ -38,7 +38,8 @@ String.prototype.isPicture = function()
     return false;            
 }
 $(document).ready(function(){
-	$("#submit").click(function(){
-		$(this).attr("disabled","disabled");
-	});
+	//$("#submit").click(function(){
+		//$(this).attr("disabled","disabled");
+		//$(this).html("提交中，请稍等！");
+	//});
 });

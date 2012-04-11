@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+<script type="text/javascript">
+	delArticle=function(id){
+		if(confirm("确定要删除？")){
+			$.ajax({
+	            type: "get",
+	            url: "/delArticle/"+id,
+	            data: {
+	            },
+	            success: function(result){
+					$("#article"+id).remove();
+	            },
+	            error: function(){
+	                alert("系统忙，请稍后再试！");
+	            }
+	        });
+		}
+	}
+
+</script>
+</head>
+
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+
+		<!-- Left Column -->
+		<div id="lcnt">
+			{% for article in articles.object_list%}
+			<!-- Post -->
+			<div class="post" id="article{{article.id}}">
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{article.addtime|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{article.addtime|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{article.addtime|date:"Y"}}</span>
+					</dd>
+				</dl>
+				
+				<!-- Post Title - Permalink -->
+				<h2 class="pngf">
+					{% ifequal article.url "" %}
+					<a href="/article/{{article.id}}">{{article.title}}</a><br />
+					{% else%}
+					<a href="/article/{{article.url}}">{{article.title}}</a><br />
+					{% endifequal%}
+				</h2>
+				<!-- Post Details -->
+					<span class="pngf"><a href="javascript:void(0)" onclick="delArticle('{{article.id}}')">删除</a></span>
+					<span class="pngf"><a href="javascript:void(0)" onclick="window.location='/editArticle/{{article.id}}'">修改</a></span>
+				<hr />
+
+			</div>
+			{% endfor %}
+
+			<!-- Pagination -->
+			<div id="pagination">
+			{% if articles.number > 1%}  
+			<a class="prev_active pngf" href="/adminArticle/page={{articles.previous_page_number}}"></a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p articles.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/adminArticle/page={{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if articles.number < articles.paginator.num_pages %}  
+			<a class="next pngf" href="/adminArticle/page={{articles.next_page_number}}"></a>
+			{% endif %}  
+			</div>
+
+		</div>
+		{% include 'user_right.html' %}
+		<br style="clear:both;"/>
+
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+
+</body>
+</html>

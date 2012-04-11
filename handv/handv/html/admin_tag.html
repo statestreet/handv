@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+<script type="text/javascript">
+delTag=function(name){
+	if(confirm("确定要删除？")){
+			$.ajax({
+	            type: "get",
+	            url: "/delTag/"+name,
+	            data: {
+	            },
+	            success: function(result){
+					$("#tag"+name).remove();
+	            },
+	            error: function(){
+	                alert("系统忙，请稍后再试！");
+	            }
+	        });
+		}
+};
+$(document).ready(function(){
+	$("#addTag").click(function(){
+	var tag_name = $("#tag_name").val();
+	if(tag_name==""){
+		alert("写点tag内容啊大姐");
+		return;
+	}
+	var tag = $("#tag").val();
+	if(tag.indexOf(tag_name)>-1){
+		alert("有这个Tag了");
+		return;
+	}
+	if(tag_name==""){
+		alert("请输入tag名称！");
+		return;
+	}
+	 $.ajax({
+            type: "get",
+            url: "/addTag/",
+            data: {
+                "name": tag_name
+            },
+            success: function(result){
+				if(result.indexOf("error")>-1){
+					alert("系统忙，请稍后再试！");
+				}else{
+					if(tag=="")
+						$("#tag").val(result);
+					else
+						$("#tag").val(tag+" "+result);
+					$("#tags").append("<li id=\"tag"+result+"\" class=\"s5 hover\"><a href=\"javascript:void(0)\">"+result+"</a><a href=\"javascript:void(0)\" onclick=\"delTag('"+result+"')\" class=\"close\" title=\"删除\"></a></li>");
+				}
+            },
+            error: function(){
+                alert("系统忙，请稍后再试！");
+            }
+        });
+	});});
+</script>
+</head>
+
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+
+		<!-- Left Column -->
+		<div id="lcnt">
+			
+			<!-- Post -->
+			<div class="post">
+				
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{now|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{now|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{now|date:"Y"}}</span>
+					</dd>
+				</dl>
+				
+				<!-- Post Title - Permalink -->
+				<h3 class="pngf">
+					<a href="#">管理Tag</a><br />
+					<!-- Post Details -->
+					<span class="pngf">Posted in Articles</span>
+				</h3>
+			</div>
+			<div id="comments">
+			
+				<!-- Comment Form -->
+					<div id="cmntfs">
+						<input type="hidden" id="tag" value="{% for tag in tags%} {{tag.name}}{% endfor%}"/>
+						<div class="pyct pngf"></div>
+						<p id="categories"><input type="text" id="tag_name" style="width:100px" tabindex="2"/><button id="addTag" type="button">添加</button><label>Tag</label></p>
+						<p><label>Tags</label><ul class="clearfix" id="tags">{% for tag in tags%} <li class="hover" id="tag{{tag.name}}"><a href="javascript:addTag('{{tag.name}}')" class="s{{forloop.counter}}">{{tag.name}}</a><a href="javascript:void(0)" onclick="delTag('{{tag.name}}')" class="close" title="删除"></a></li>{% endfor %}</ul></p>
+					</div>
+
+			</div>
+
+		</div>
+
+		{% include 'user_right.html' %}
+
+        <br style="clear:both;"/>
+
+	</div>
+
+</div>
+{% include 'footer.html' %}
+</body>
+</html>
