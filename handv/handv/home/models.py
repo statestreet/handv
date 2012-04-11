@@ -22,6 +22,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=200)
     type = models.CharField(max_length=2) 
+    state = models.CharField(max_length=2)
         
 class Article(models.Model):
     user = models.ForeignKey(User)
@@ -47,3 +48,4 @@ class Attachment(models.Model):
     addtime = models.DateTimeField()
     filepath = models.CharField(max_length=500)  
     type = models.CharField(max_length=2) 
+    state = models.CharField(max_length=2)

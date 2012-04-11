@@ -37,3 +37,8 @@ String.prototype.isPicture = function()
     //alert('False');
     return false;            
 }
+$(document).ready(function(){
+	$("#submit").click(function(){
+		$(this).attr("disabled","disabled");
+	});
+});

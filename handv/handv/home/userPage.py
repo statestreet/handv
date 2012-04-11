@@ -93,12 +93,14 @@ def handle_uploaded_file(f):
     return filename
     
 @interceptor
-def saveAdd(request):
+def addArticle(request):
     title = request.POST['title']
     att = request.POST['atts']
     tag = request.POST['tag']
     url = request.POST['url']
     content = request.POST['content']
+    if title=="" or content=="":
+        return result("没有标题或内容啊！") 
     now = datetime.datetime.now()
     user = request.session['user']
     article = Article(user=user,addtime=now,url=url,content=content,title=title,tag=tag,state='01',type='00')
@@ -115,7 +117,7 @@ def addTag(request):
     tags = Tag.objects.filter(name=name)
     user = request.session['user']
     if len(tags)==0:
-        tag = Tag(name=name,user=user,desc='',type='00')
+        tag = Tag(name=name,user=user,desc='',type='00',state='00')
         tag.save()
         return HttpResponse(name)
     else:
@@ -144,7 +146,7 @@ def doLogin(request):
                         return result("绑定成功！")
                 except KeyError:
                     pass
-                return home(request)
+                return HttpResponseRedirect("/home")
         else:
             return result("用户名或者密码错拉！")
     else:
@@ -153,7 +155,8 @@ def doLogin(request):
 @interceptor
 def home(request):  
     user = request.session['user']
-    c = Context({'user':user,'session':request.session}) 
+    now = datetime.datetime.now()
+    c = Context({'user':user,'now':now,'session':request.session}) 
     t = loader.get_template('home.html')
     return HttpResponse(t.render(c))
 
