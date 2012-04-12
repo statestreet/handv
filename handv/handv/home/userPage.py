@@ -62,6 +62,9 @@ def doUpload(request):
     if form.is_valid():
         f = request.FILES['fileToUpload']
         filepath = handle_uploaded_file(f)
+        user = request.session['user']
+        attachment  = Attachment(user=user,filepath=filepath,addtime=datetime.datetime.now(),state='01',type="00")
+        attachment.save()
         return HttpResponse("{msg:'"+filepath+"'}")
     else:
         return HttpResponse("{error:'没有文件和描述啊大姐'}")
@@ -103,7 +106,8 @@ def addArticle(request):
     atts = att.split(',')
     article.save()  
     for filepath in atts:
-        attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),state='01',type="00")
+        attachment  = Attachment.objects.filter(filepath=filepath)[0]
+        attachment.article=article
         attachment.save()
     return result("发表成功！")
     
@@ -284,6 +288,43 @@ def delComment(request,id):
     article.state='02'
     article.save()
     return HttpResponse("删除成功！")
+
+@interceptor
+def photoAdmin(request):  
+    page = 1
+    try:
+        page = int(request.POST['page']) 
+    except Exception:
+        pass
+    after_range_num = 5 
+    bevor_range_num = 4 
+    photos = Attachment.objects.all().order_by('state','-addtime')   
+    paginator = Paginator(photos,20)  
+    try:  
+        photos = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        photos = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'now':datetime.datetime.now(),'photos':photos,'page_range':page_range,'session':request.session}) 
+    t = loader.get_template('admin_photo.html')
+    return HttpResponse(t.render(c))
+
+@interceptor
+def delPhoto(request,id,type):  
+    type = str(type)
+    id = int(id)
+    photo = Attachment.objects.get(id=id) 
+    if type=="0":
+        photo.state='02'
+        photo.save()
+    else:
+        filepath = os.path.dirname(globals()["__file__"])+photo.filepath
+        os.remove(filepath)
+        photo.delete() 
+    return HttpResponse("删除成功！")  
 
 from django import forms
 class UploadFileForm(forms.Form):

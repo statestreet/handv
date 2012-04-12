@@ -44,7 +44,7 @@ class Comment(models.Model):
     
 class Attachment(models.Model):
     user = models.ForeignKey(User)
-    article = models.ForeignKey(Article)
+    article = models.ForeignKey(Article,null=True, blank=True, default = None)
     addtime = models.DateTimeField()
     filepath = models.CharField(max_length=500)  
     type = models.CharField(max_length=2) 

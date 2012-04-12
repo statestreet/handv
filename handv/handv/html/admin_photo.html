@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+</head>
+<script type="text/javascript">
+	delPhoto=function(id,type){
+		if(confirm("确定要删除？")){
+			$.ajax({
+	            type: "get",
+	            url: "/delPhoto/"+id+"/"+type+"/",
+	            data: {
+	            },
+	            success: function(result){
+					$("#photo"+id).remove();
+	            },
+	            error: function(){
+	                alert("系统忙，请稍后再试！");
+	            }
+	        });
+		}
+	}
+
+</script>
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+
+		<!-- Left Column -->
+		<div id="lcnt">
+			{% for photo in photos.object_list%}
+			<!-- Post -->
+			<div class="post" id="photo{{photo.id}}">
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{photo.addtime|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{photo.addtime|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{photo.addtime|date:"Y"}}</span>
+					</dd>
+				</dl>
+				<div class="content">
+				<img src="{{photo.filepath}}" width="500px"/>
+				{% ifequal photo.state "00"%}
+				<a href="javascript:void(0)" onclick="delPhoto('{{photo.id}}','1')">彻底删除</a>
+				{% else%}
+					{% ifequal photo.state "02"%}
+					<a href="javascript:void(0)" onclick="delPhoto('{{photo.id}}','1')">彻底删除</a>
+					{% else%}
+					<a href="javascript:void(0)" onclick="delPhoto('{{photo.id}}','0')">删除</a>
+					{% endifequal%}
+				{% endifequal%}
+				</div>			
+				<hr />
+
+			</div>
+			{% endfor %}
+
+			<!-- Pagination -->
+			<div id="pagination">
+			{% if photos.number > 1%}  
+			<a class="prev_active pngf" href="/photos/{{photos.previous_page_number}}"></a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p photos.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/photos/{{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if photos.number < photos.paginator.num_pages %}  
+			<a class="next pngf" href="/photos/{{photos.next_page_number}}"></a>
+			{% endif %}  
+			</div>
+
+		</div>
+		{% include 'user_right.html' %}
+		<br style="clear:both;"/>
+
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+
+</body>
+</html>
