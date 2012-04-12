@@ -103,7 +103,7 @@ def addArticle(request):
     atts = att.split(',')
     article.save()  
     for filepath in atts:
-        attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),type="00")
+        attachment  = Attachment(article=article,user=user,filepath=filepath,addtime=datetime.datetime.now(),state='01',type="00")
         attachment.save()
     return result("发表成功！")
     
