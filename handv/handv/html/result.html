@@ -25,7 +25,9 @@
 				</h3>
 			<br style="clear:both;"/>
 				<p>
-					{{result}}
+					{% autoescape off %}
+					    {{result}}
+					{% endautoescape %}
 				</p>
 			</div>
 		</div>

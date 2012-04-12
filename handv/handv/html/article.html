@@ -87,7 +87,9 @@
 
 				</div>
 				{% endfor%}
-
+				{% if session.user == None%}
+					<a href="/register/">注册</a> 或者 <a href="/login">登录</a>
+				{%endif%}
 				{% if session.weibo == None%}
 				<div id="comment_weibo_login"></div>			
 				<script type="text/javascript">WB2.anyWhere(function(W){

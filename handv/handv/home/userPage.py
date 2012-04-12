@@ -155,25 +155,27 @@ def doLogin(request):
     password = request.POST['password']
     if username=='' or password=='':
         return result("请输入用户名或者密码！")
-    m = User.objects.filter(username=username,internal=1)      
+    m = User.objects.filter(username=username)      
     pwd = md5.new(request.POST['password'])
     pwd.digest()
     if len(m)!=0:
-        if  m[0].password == pwd.hexdigest():
-            if m[0].state=='0':
+        user = m[0]
+        if  user.password == pwd.hexdigest():
+            if user.state=='0':
                 return result("帐号没有激活。请先登录邮箱或者联系一休激活帐号。")
             else:
-                try:
-                    request.session['user'] = m[0]
-                    weibo = request.session['weibo']
-                    if weibo!=None and weibo!='':
-                        user = m[0]
-                        user.weibo =weibo
-                        user.save()
-                        return result("绑定成功！")
-                except KeyError:
-                    pass
-                return HttpResponseRedirect("/home")
+                request.session['user'] = user
+                if user.internal==1:
+                    return HttpResponseRedirect("/home")
+                else:
+                    try:
+                        weibo = request.session['weibo']
+                        if weibo!=None and weibo!='':
+                            user.weibo =weibo
+                            user.save()
+                            return result("绑定成功！")
+                    except KeyError:
+                        return HttpResponseRedirect("/")  
         else:
             return result("用户名或者密码错拉！")
     else:

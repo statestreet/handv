@@ -13,7 +13,13 @@ $.ajax({
     }
 });
 </script>
-<div id="wb_connect_btn"></div>			
+<div id="wb_connect_btn"></div>	
+{% if session.user == None%}
+		<a href="/register/">注册</a> 或者 <a href="/login">登录</a>
+{%else%}
+		<h2>欢迎你，{{session.user.name}}</h2>
+		<a href="/logout/">不玩了</a> 
+{% endif %}		
 <script type="text/javascript">WB2.anyWhere(function(W){
     W.widget.connectButton({
         id: "wb_connect_btn",
