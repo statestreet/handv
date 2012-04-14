@@ -119,9 +119,11 @@ body {
 	min-height:782px;
 	margin:0px auto;
 	position:relative;
+	/*overflow:hidden;*/
 	margin-top: -553px;
 }
 #lcnt {
+	background:url(/images/paper.jpg) repeat-y 31px center;
 	width:726px;
 	height:auto;
 	float:left;

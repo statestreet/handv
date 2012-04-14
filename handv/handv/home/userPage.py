@@ -141,12 +141,12 @@ def saveEdit(request):
 @interceptor
 def addTag(request):
     name = request.GET['name'].strip()  
-    tags = Tag.objects.filter(name=name)
+    tags = Tag.objects.filter(name=name,state='01')
     user = request.session['user']
     if len(tags)==0:
         tag = Tag(name=name,user=user,desc='',type='00',state='01')
         tag.save()
-        return HttpResponse(name)
+        return HttpResponse(name+','+str(tag.id))
     else:
         return HttpResponse("error")
 
@@ -275,12 +275,11 @@ def delArticle(request,id):
     return HttpResponse("删除成功！")
 
 @interceptor
-def delTag(request,name):  
-    name = str(name)
-    tags = Tag.objects.filter(name=name)
-    for tag in tags: 
-        tag.state='02'
-        tag.save()
+def delTag(request,id):  
+    id = int(id)
+    tag = Tag.objects.get(id=id)
+    tag.state='02'
+    tag.save()
     return HttpResponse("删除成功！")
 
 @interceptor

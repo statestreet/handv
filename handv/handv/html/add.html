@@ -109,8 +109,9 @@ addTag=function(name){
 delTag=function(name){
 	$("#tag"+name).remove();
 	var tag = $("#tag").val();
-	tag.replace(" "+name,"");
-	tag.replace(name,"");
+	tag = tag.replace(" "+name,"");
+	tag = tag.replace(name,"");
+	$("#tag").val(tag);
 };
 $(document).ready(function(){
 	$("#addTag").click(function(){
@@ -136,13 +137,15 @@ $(document).ready(function(){
             },
             success: function(result){
 				if(result.indexOf("error")>-1){
-					alert("系统忙，请稍后再试！");
+					alert("有这个tag了");
 				}else{
+					name=result.split(",")[0];
+					id=result.split(",")[1];
 					if(tag=="")
-						$("#tag").val(result);
+						$("#tag").val(name);
 					else
-						$("#tag").val(tag+" "+result);
-					$("#tags").append("<li id=\"tag"+result+"\" class=\"s5 hover\"><a href=\"javascript:void(0)\">"+result+"</a><a href=\"javascript:void(0)\" onclick=\"delTag('"+result+"')\" class=\"close\" title=\"删除\"></a></li>");
+						$("#tag").val(tag+" "+name);
+					$("#tags").append("<li id=\"tag"+name+"\" class=\"s5 hover\"><a href=\"javascript:void(0)\">"+name+"</a><a href=\"javascript:void(0)\" onclick=\"delTag('"+name+"')\" class=\"close\" title=\"删除\"></a></li>");
 				}
             },
             error: function(){

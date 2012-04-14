@@ -15,6 +15,18 @@ def test(request):
     t = loader.get_template('test.html')
     return HttpResponse(t.render(c))
 
+def search(request): 
+    key = request.GET['key'].strip()
+    if key=="":
+        return result("写点关键词")
+    else:
+        articles = Article.objects.filter((Q(tag__icontains=key)|Q(title__icontains=key)|Q(content__icontains=key))&Q(state='01')).order_by('-addtime')
+        if len(articles)==0:
+            return result("没有相应的结果！") 
+        c = Context({'key':key,'articles':articles,'session':request.session}) 
+        t = loader.get_template('search.html')
+        return HttpResponse(t.render(c))
+
 def articles(request,page):  
     after_range_num = 5 
     bevor_range_num = 4 

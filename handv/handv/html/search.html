@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% include 'head.html' %}
+</head>
+<body>
+
+<!-- Wrap div -->
+<div id="wrap">
+
+	{% include 'top.html' %}
+
+	<!-- Main Container -->
+	<div id="cnt" class="pngf">
+	
+		<!-- Left Column -->
+		<div id="lcnt">
+			<h2>搜索“{{key}}”的结果：</h2>
+			{% for article in articles%}
+			<!-- Post -->
+			<div class="post">
+				<!-- Post Date -->
+				<dl class="date">
+					<dt>
+						<span>{{article.addtime|date:"d"}}</span>
+					</dt>
+					<dd>
+						<span>{{article.addtime|date:"M"}}</span>
+					</dd>
+					<dd>
+						<span>{{article.addtime|date:"Y"}}</span>
+					</dd>
+				</dl>
+				
+				<!-- Post Title - Permalink -->
+				<h3 class="pngf">
+					{% ifequal article.url "" %}
+					<a href="/article/{{article.id}}">{{article.title}}</a><br />
+					{% else%}
+					<a href="/article/{{article.url}}">{{article.title}}</a><br />
+					{% endifequal%}
+
+					<!-- Post Details -->
+					<span class="pngf">{{article.tag}}</span>
+				</h3>
+				<hr />
+			</div>
+			{% endfor %}
+
+		</div>
+		{% include 'right.html' %}
+		<br style="clear:both;"/>
+
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+
+</body>
+</html>
