@@ -205,6 +205,8 @@ h3 span {
 	width:700px;
 	height:auto;
 	margin:0 0 43px 0;
+	overflow:hidden;
+	zoom: 1;
 }
 .more-link {
 	display:block;
