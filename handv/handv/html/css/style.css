@@ -119,9 +119,11 @@ body {
 	min-height:782px;
 	margin:0px auto;
 	position:relative;
-	/*overflow:hidden;*/
+	
 	margin-top: -553px;
+	zoom:1;
 }
+#cnt:after { content: '\20'; clear: both; display: block; }
 #lcnt {
 	background:url(/images/paper.jpg) repeat-y 31px center;
 	width:726px;
