@@ -198,3 +198,17 @@ def confirm(request):
     u.state='1'
     u.save()
     return result("确认成功，请<a href='/login/'>登录</a>")
+
+def addComment(request):  
+    #user = request.session['user']
+    articleId = request.POST['articleId']
+    name = request.POST['name']
+    email = request.POST['email']
+    article = Article.objects.get(id=int(articleId))
+    content = request.POST['content']
+    if content =="" or name=="":
+        return result("哥们填点名字，email，评论内容啊！")
+    else:
+        comment = Comment(name=name,email=email,article=article,addtime=datetime.datetime.now(),title="",content=content,state='01')
+        comment.save()
+        return result("发表成功啦！")

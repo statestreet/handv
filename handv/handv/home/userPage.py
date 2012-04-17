@@ -188,19 +188,6 @@ def home(request):
     c = Context({'user':user,'now':now,'session':request.session}) 
     t = loader.get_template('home.html')
     return HttpResponse(t.render(c))
-
-@weiboInterceptor
-def addComment(request):  
-    user = request.session['user']
-    articleId = request.POST['articleId']
-    article = Article.objects.get(id=int(articleId))
-    content = request.POST['content']
-    if content =="":
-        return result("哥们填点评论内容啊！")
-    else:
-        comment = Comment(user=user,article=article,addtime=datetime.datetime.now(),title="",content=content,state='01')
-        comment.save()
-        return result("发表成功啦！")
     
 @interceptor
 def articleAdmin(request):  

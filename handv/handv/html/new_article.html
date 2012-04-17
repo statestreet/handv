@@ -22,21 +22,17 @@
 				{% for comment in comments%}
 				<div class="comment">
 					<div class="avatar">
-						<img src="/images/avatar1.jpg" alt="" width="80" height="80" /><br />
-						<span>Name User</span><br />
+						<img src="/images/avatar2.gif" alt="" width="80" height="80" /><br />
+						<span>{{comment.name}}</span><br />
 						{{comment.addtime}}
 					</div>
 					<p>{{comment.content}} </p>
 				</div>
 				{% endfor%}
 				<div id="add">
-					{% if session.user == None%}
-						<a href="/register/">注册</a> 或者 <a href="/login">登录</a>
-					{% else %}
 					<img src="/images/title4.gif" alt="" width="216" height="47" class="title" /><br />
 					<div class="avatar">
 						<img src="/images/avatar2.gif" alt="" width="80" height="80" /><br />
-						<span>{{session.user.name}}</span><br />
 					</div>
 					<div class="form">
 						<form action="/addComment/" method="post" name="cmntfrm" id="cmntfrm">
@@ -48,7 +44,6 @@
 						</form>
 						</form>
 					</div>
-					{%endif%}
 				</div>
 			</div>
 		</div>

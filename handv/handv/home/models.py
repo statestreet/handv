@@ -35,12 +35,14 @@ class Article(models.Model):
     type = models.CharField(max_length=2)
     
 class Comment(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,null=True, blank=True, default = None)
     article = models.ForeignKey(Article)
     addtime = models.DateTimeField() 
     title = models.CharField(max_length=200)
     content = models.TextField(default='')
     state = models.CharField(max_length=2)
+    name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
     
 class Attachment(models.Model):
     user = models.ForeignKey(User)
