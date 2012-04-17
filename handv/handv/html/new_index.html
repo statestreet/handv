@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+{% include 'new_head.html' %}
+</head>
+
+<body>
+	{% include 'new_nav.html' %}
+	<div id="content">
+		<div id="posts">
+			{% for article in articles.object_list%}
+			<div class="post">
+				<h2>{{article.title}}</h2>
+				<div><span class="date">{{article.addtime|date:"Y"}} {{article.addtime|date:"M"}} {{article.addtime|date:"d"}}</span><span class="categories">in: {{article.tag}}</span></div>
+				<div class="description" style="height:400px;">
+				{{article.content|safe}}
+				</div>
+				<p class="comments">Comments - <a href="#">17</a>   <span>|</span>   
+				{% ifequal article.url "" %}
+				<a class="more-link pngf" href="/article/{{article.id}}">
+				{% else%}
+				<a class="more-link pngf" href="/article/{{article.url}}">
+				{% endifequal%}Continue Reading</a></p>
+			</div>
+			{% endfor %}
+			<!-- Pagination -->
+			<div id="pagination">
+			{% if articles.number > 1%}  
+			<a class="prev_active pngf" href="/articles/{{articles.previous_page_number}}">&lt;&lt;</a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p articles.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/articles/{{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if articles.number < articles.paginator.num_pages %}  
+			<a class="next pngf" href="/articles/{{articles.next_page_number}}">&gt;&gt;</a>
+			{% endif %}  
+			</div>
+		</div>
+		{% include 'new_right.html' %}
+	</div>
+	{% include 'new_footer.html' %}
+</body>
+</html>

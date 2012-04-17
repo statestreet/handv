@@ -1,0 +1,57 @@
+<script type="text/javascript">
+$.ajax({
+    type: "get",
+    url: "/tags/",
+    data: {},
+    success: function(result){
+		if(result.indexOf("error")>-1){
+		}else{
+			$("#cats").append(result);
+		}
+    },
+    error: function(){
+    }
+});
+/*
+ * Simple JS function for setting the search value
+ */
+function clS(t){
+        var srch = document.getElementById('s'), val = srch.value.toString().toLowerCase(), re = /^\s+$/;
+        if(t) {
+                if(val == 'search...' || val == 'search'){
+                        srch.value = '';
+                }
+        } else {
+                if(val == 'search...' || val == 'search' || val == '' || re.test(val)) {
+                        srch.value = 'search...';
+                }
+        }
+}
+</script>
+<div id="sidebar">
+    <div id="search">
+    <form name="search_form" id="search_form" action="/search/" method="get">
+		<input type="text"  type="text" name="key" value="search..." onfocus="clS(1);" onblur="clS(0);" id="s"> <a href="#"><img src="/images/go.gif" alt="" width="26" height="26" onclick="window.search_form.submit()" /></a>
+	</form>
+	</div>
+	<div class="list">
+		<img src="/images/title1.gif" alt="" width="186" height="36" />
+		<ul id="cats">
+		</ul>
+		<img src="/images/title2.gif" alt="" width="180" height="34" />
+		<ul>
+			<li><a href="#">January</a></li>
+			<li><a href="#">July</a></li>
+			<li><a href="#">February</a></li>
+			<li><a href="#">August</a></li>
+			<li><a href="#">March</a></li>
+			<li><a href="#">September</a></li>
+			<li><a href="#">April</a></li>
+			<li><a href="#">October</a></li>
+			<li><a href="#">May</a></li>
+			<li><a href="#">November</a></li>
+			<li><a href="#">June</a></li>
+			<li><a href="#">December</a></li>
+		</ul>
+	</div>
+</div>

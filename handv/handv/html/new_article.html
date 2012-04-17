@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+{% include 'new_head.html' %}
+</head>
+
+<body>
+	{% include 'new_nav.html' %}
+	<div id="content">
+		<div id="posts">
+			<div class="post">
+				<h2>{{article.title}}</h2>
+				<div><span class="date">{{article.addtime|date:"Y"}} {{article.addtime|date:"M"}} {{article.addtime|date:"d"}}</span><span class="categories">in: {{article.tag}}</span></div>
+				<div class="description">
+					{{article.content|safe}}
+				</div>
+				<p class="comments">Comments - <a href="#">{{comments|length}}</a>   <span>|</span> 
+			</div>
+			<div id="comments">
+				<img src="/images/title3.gif" alt="" width="216" height="39" /><br />
+				{% for comment in comments%}
+				<div class="comment">
+					<div class="avatar">
+						<img src="/images/avatar1.jpg" alt="" width="80" height="80" /><br />
+						<span>Name User</span><br />
+						{{comment.addtime}}
+					</div>
+					<p>{{comment.content}} </p>
+				</div>
+				{% endfor%}
+				<div id="add">
+					{% if session.user == None%}
+						<a href="/register/">注册</a> 或者 <a href="/login">登录</a>
+					{% else %}
+					<img src="/images/title4.gif" alt="" width="216" height="47" class="title" /><br />
+					<div class="avatar">
+						<img src="/images/avatar2.gif" alt="" width="80" height="80" /><br />
+						<span>{{session.user.name}}</span><br />
+					</div>
+					<div class="form">
+						<form action="/addComment/" method="post" name="cmntfrm" id="cmntfrm">
+							<input type="hidden" name="articleId" value="{{article.id}}"/>
+							<textarea name="content" >Your Message...</textarea><br />
+							<input name="name" type="text" value="Name" /><br />
+							<input name="email" type="text" value="E-mail" /><br />
+							<a href="javascript:void(0)" onclick="window.cmntfrm.submit()"><img src="/images/button.gif" alt="" width="94" height="27" /></a>
+						</form>
+						</form>
+					</div>
+					{%endif%}
+				</div>
+			</div>
+		</div>
+		{% include 'new_right.html' %}
+		</div>
+	{% include 'new_footer.html' %}
+</body>
+</html>

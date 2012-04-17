@@ -45,7 +45,7 @@ def articles(request,page):
     else:  
         page_range = paginator.page_range[0:int(page)+bevor_range_num]         
     c = Context({'articles':articles,'page_range':page_range,'session':request.session}) 
-    t = loader.get_template('index.html')
+    t = loader.get_template('new_index.html')
     return HttpResponse(t.render(c))
 
 def photo(request):
@@ -69,20 +69,20 @@ def photos(request,page):
     else:  
         page_range = paginator.page_range[0:int(page)+bevor_range_num]         
     c = Context({'photos':photos,'page_range':page_range,'session':request.session}) 
-    t = loader.get_template('photos.html')
+    t = loader.get_template('new_photos.html')
     return HttpResponse(t.render(c))
 
 def tags(request):
     tags = Tag.objects.filter(state="01")
     html =""
     for tag in tags:
-        html +="<a href='/tag/"+tag.name+"'>"+tag.name+"</a>"
+        html +="<li><a href='/tag/"+tag.name+"'>"+tag.name+"</a></li>"
     return HttpResponse(html)
 
 def tag(request,tag):
     articles = Article.objects.filter(Q(tag__icontains=tag)&Q(state='01')).order_by('-addtime')   
     c = Context({'articles':articles,'session':request.session}) 
-    t = loader.get_template('tag_article.html')
+    t = loader.get_template('new_tag_article.html')
     return HttpResponse(t.render(c))
 
 def article(request,param):  
@@ -95,7 +95,7 @@ def article(request,param):
         article=articles[0]
     comments = Comment.objects.filter(article=article).order_by('-addtime')
     c = Context({'article':article,'comments':comments,'session':request.session}) 
-    t = loader.get_template('article.html')
+    t = loader.get_template('new_article.html')
     return HttpResponse(t.render(c))
 
 def recentPosts(request):
@@ -182,7 +182,7 @@ def doFindback(request):
  
 def result(result):
     c = Context({'result':result}) 
-    t = loader.get_template('result.html')
+    t = loader.get_template('new_result.html')
     return HttpResponse(t.render(c)) 
 
 def validateEmail(email):
