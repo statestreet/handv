@@ -15,8 +15,8 @@ $.ajax({
 /*
  * Simple JS function for setting the search value
  */
-function clS(t){
-        var srch = document.getElementById('s'), val = srch.value.toString().toLowerCase(), re = /^\s+$/;
+function clS(srch,t){
+        var val = srch.value.toString().toLowerCase(), re = /^\s+$/;
         if(t) {
                 if(val == 'search...' || val == 'search'){
                         srch.value = '';
@@ -27,11 +27,19 @@ function clS(t){
                 }
         }
 }
+function search(){
+	var key = $("#s").val();
+	if(key==""){
+		alert("请输入搜索的关键字！");
+	}else{
+		window.location="/search?key="+key;
+	}
+}
 </script>
 <div id="sidebar">
     <div id="search">
     <form name="search_form" id="search_form" action="/search/" method="get">
-		<input type="text"  type="text" name="key" value="search..." onfocus="clS(1);" onblur="clS(0);" id="s"> <a href="#"><img src="/images/go.gif" alt="" width="26" height="26" onclick="window.search_form.submit()" /></a>
+		<input type="text"  type="text" name="key" value="search..." onfocus="clS(this,1);" onblur="clS(this,0);" id="s"> <a href="javascript:void(0)"  ><img src="/images/go.gif" alt="搜索" width="26" height="26" onclick="search()"/></a>
 	</form>
 	</div>
 	<div class="list">

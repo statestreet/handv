@@ -14,9 +14,9 @@
 				<div><span class="date">{{photo.addtime|date:"Y"}} {{photo.addtime|date:"M"}} {{photo.addtime|date:"d"}}</span><span class="categories">in: {{article.tag}}</span></div>
 				<div class="description" style="height:400px;">
 				{% ifequal photo.article.url "" %}
-					<a href="/article/{{photo.article.id}}"><img src="{{photo.filepath}}"/></a>
+					<a href="/article/{{photo.article.id}}"><img width="500px" src="{{photo.filepath}}"/></a>
 					{% else%}
-					<a href="/article/{{photo.article.url}}"><img src="{{photo.filepath}}"/></a>
+					<a href="/article/{{photo.article.url}}"><img width="500px" src="{{photo.filepath}}"/></a>
 					{% endifequal%}
 				</div>
 			</div>

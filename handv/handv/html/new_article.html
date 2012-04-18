@@ -37,10 +37,11 @@
 					<div class="form">
 						<form action="/addComment/" method="post" name="cmntfrm" id="cmntfrm">
 							<input type="hidden" name="articleId" value="{{article.id}}"/>
-							<textarea name="content" >Your Message...</textarea><br />
-							<input name="name" type="text" value="Name" /><br />
-							<input name="email" type="text" value="E-mail" /><br />
-							<a href="javascript:void(0)" onclick="window.cmntfrm.submit()"><img src="/images/button.gif" alt="" width="94" height="27" /></a>
+							<textarea name="content" ></textarea><br />
+							<label>Name:</label><input name="name" type="text" /><br />
+							<label>Email:</label><input name="email" type="text" /><br />
+							<input type=’submit’ value="test" style="display:none;"> 
+							<a href="javascript:void(0)" onclick="document.cmntfrm.submit()"><img src="/images/button.gif" alt="" width="94" height="27" /></a>
 						</form>
 						</form>
 					</div>

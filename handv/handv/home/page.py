@@ -24,7 +24,7 @@ def search(request):
         if len(articles)==0:
             return result("没有相应的结果！") 
         c = Context({'key':key,'articles':articles,'session':request.session}) 
-        t = loader.get_template('search.html')
+        t = loader.get_template('new_search.html')
         return HttpResponse(t.render(c))
 
 def articles(request,page):  
@@ -105,7 +105,7 @@ def recentPosts(request):
     html =""
     for article in articles.object_list:
         if article.url =="":
-            html +="<a class=\"pl\" href='/article/"+article.id+"'>"+article.title+"</a>"
+            html +="<a class=\"pl\" href='/article/"+str(article.id)+"'>"+article.title+"</a>"
         else:
             html +="<a class=\"pl\" href='/article/"+article.url+"'>"+article.title+"</a>"
     return HttpResponse(html)
@@ -118,7 +118,7 @@ def recentComments(request):
     for comment in comments.object_list:
         article = comment.article
         if article.url =="":
-            html +="<a class=\"pr\" href='/article/"+article.id+"'><span class=\"prs\">"+str(comment.addtime)+"</span>"+comment.content+"</a>"
+            html +="<a class=\"pr\" href='/article/"+str(article.id)+"'><span class=\"prs\">"+str(comment.addtime)+"</span>"+comment.content+"</a>"
         else:
             html +="<a class=\"pr\" href='/article/"+article.url+"'><span class=\"prs\">"+str(comment.addtime)+"</span>"+comment.content+"</a>"
     return HttpResponse(html)

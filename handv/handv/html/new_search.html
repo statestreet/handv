@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+{% include 'new_head.html' %}
+</head>
+
+<body>
+	{% include 'new_nav.html' %}
+	<div id="content">
+		<div id="posts">
+			<h2>搜索“{{key}}”的结果：</h2>
+			{% for article in articles%}
+			<div class="post">
+				<h2>{{article.title}}</h2>
+				<div class="description" style="height:100px;">
+				{{article.content|safe}}
+				</div>
+				<p class="comments">Comments - <a href="#">17</a>   <span>|</span>   
+				{% ifequal article.url "" %}
+				<a class="more-link pngf" href="/article/{{article.id}}">
+				{% else%}
+				<a class="more-link pngf" href="/article/{{article.url}}">
+				{% endifequal%}Continue Reading</a></p>
+			</div>
+			{% endfor %}
+		</div>
+		{% include 'new_right.html' %}
+	</div>
+	{% include 'new_footer.html' %}
+</body>
+</html>
