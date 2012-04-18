@@ -8,6 +8,7 @@ from handv.home.page import *
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
+uploadDir = os.path.dirname(globals()["__file__"])
 
 def interceptor(func):
     logger.info('interceptor function : %s ' % func.__name__);
@@ -73,7 +74,7 @@ def handle_uploaded_file(f):
     now = datetime.datetime.now()
     filedir = "/files/"+str(now.year)+"/"+str(now.month)+"/"
     filename=filedir+str(uuid.uuid1())+f.name
-    fname = os.path.dirname(globals()["__file__"])+filename
+    fname = uploadDir +filename
     if os.path.exists(fname):  #判断文件夹是否存在
         os.remove(fname)
     dirs= os.path.dirname(fname)  #如果fname是完整路径 则输出完整的 否则为空
@@ -309,7 +310,7 @@ def delPhoto(request,id,type):
         photo.state='02'
         photo.save()
     else:
-        filepath = os.path.dirname(globals()["__file__"])+photo.filepath
+        filepath = uploadDir +photo.filepath
         os.remove(filepath)
         photo.delete() 
     return HttpResponse("删除成功！")  
