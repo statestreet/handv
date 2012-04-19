@@ -16,7 +16,7 @@
 				<div class="description" style="height:400px;">
 				{{article.content|safe}}
 				</div>
-				<p class="comments">Comments - <a href="#">17</a>   <span>|</span>   
+				<p class="comments">Comments - <a href="#">{{article.comment_set.all|length }}</a>   <span>|</span>   
 				{% ifequal article.url "" %}
 				<a class="more-link pngf" href="/article/{{article.id}}">
 				{% else%}
