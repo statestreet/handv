@@ -18,9 +18,10 @@
 					<a href="/article/{{photo.article.url}}">{{photo.article.title}}</a>
 					{% endifequal%}
 				</span></div>
-				<div class="description" style="height:400px;">
+				<div class="description">
 					<img width="500px" src="{{photo.filepath}}"/>
 				</div>
+				<p class="comments"><a target="_blank" class="more-link pngf" href="{{photo.filepath}}">View Source</a></p>
 			</div>
 			{% endfor %}
 			<!-- Pagination -->
