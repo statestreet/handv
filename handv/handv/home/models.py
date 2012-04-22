@@ -33,6 +33,7 @@ class Article(models.Model):
     content = models.TextField(default='')
     state = models.CharField(max_length=2)
     type = models.CharField(max_length=2)
+    views = models.IntegerField(5)
     
 class Comment(models.Model):
     user = models.ForeignKey(User,null=True, blank=True, default = None)

@@ -16,7 +16,11 @@
 				<div class="description" style="height:100px;">
 				{{article.content|safe}}
 				</div>
-				<p class="comments">Comments - <a href="#">{{article.comment_set.all|length }}</a>   <span>|</span>   
+				<p class="comments">Comments - {% ifequal article.url "" %}
+				<a href="/article/{{article.id}}#comments">
+				{% else%}
+				<a href="/article/{{article.url}}#comments">
+				{% endifequal%}{{article.comment_set.all|length }}</a> , Views - <a href="#">{{article.views}}</a>  <span>|</span>   
 				{% ifequal article.url "" %}
 				<a class="more-link pngf" href="/article/{{article.id}}">
 				{% else%}

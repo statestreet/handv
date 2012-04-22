@@ -93,6 +93,9 @@ def article(request,param):
         url=str(param)
         articles = Article.objects.filter(url=url)
         article=articles[0]
+    views = article.views
+    article.views = views+1
+    article.save()
     comments = Comment.objects.filter(article=article,state='01').order_by('-addtime')
     c = Context({'article':article,'comments':comments,'session':request.session}) 
     t = loader.get_template('new_article.html')
