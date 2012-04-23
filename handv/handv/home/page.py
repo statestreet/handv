@@ -80,10 +80,29 @@ def tags(request):
     return HttpResponse(html)
 
 def tag(request,tag):
+    return tagArticles(request,tag,1)
+
+def tagArticles(request,tag,page):  
+    after_range_num = 5 
+    bevor_range_num = 4 
+    if page==None:
+        page=1
+    else:
+        page=int(page) 
     articles = Article.objects.filter(Q(tag__icontains=tag)&Q(state='01')).order_by('-addtime')   
-    c = Context({'articles':articles,'session':request.session}) 
+    paginator = Paginator(articles,2)  
+    try:  
+        articles = paginator.page(page)  
+    except(EmptyPage,InvalidPage,PageNotAnInteger):  
+        articles = paginator.page(1) 
+    if page >= after_range_num:  
+        page_range = paginator.page_range[page-after_range_num:page+bevor_range_num]  
+    else:  
+        page_range = paginator.page_range[0:int(page)+bevor_range_num]         
+    c = Context({'articles':articles,'tag':tag,'page_range':page_range,'session':request.session}) 
     t = loader.get_template('new_tag_article.html')
     return HttpResponse(t.render(c))
+
 
 def article(request,param):  
     try:

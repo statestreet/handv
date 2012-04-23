@@ -9,7 +9,7 @@
 	{% include 'new_nav.html' %}
 	<div id="content">
 		<div id="posts">
-			{% for article in articles%}
+			{% for article in articles.object_list%}
 			<div class="post">
 				<h2>{{article.title}}</h2>
 				<div><span class="date">{{article.addtime|date:"Y"}} {{article.addtime|date:"M"}} {{article.addtime|date:"d"}}</span><span class="categories">in: {{article.tag}}</span></div>
@@ -20,7 +20,7 @@
 				<a href="/article/{{article.id}}#comments">
 				{% else%}
 				<a href="/article/{{article.url}}#comments">
-				{% endifequal%}{{article.comment_set.all|length }}</a>    <span>|</span>   
+				{% endifequal%}{{article.comment_set.all|length }}</a> , Views - <a href="#">{{article.views}}</a> |</span>   
 				{% ifequal article.url "" %}
 				<a class="more-link pngf" href="/article/{{article.id}}">
 				{% else%}
@@ -28,6 +28,22 @@
 				{% endifequal%}Continue Reading</a></p>
 			</div>
 			{% endfor %}
+			<!-- Pagination -->
+			<div id="pagination">
+			{% if articles.number > 1%}  
+			<a class="prev_active pngf" href="/tag/{{tag}}/{{articles.previous_page_number}}">&lt</a>
+			{% endif %}  
+			{% for p in page_range %}  
+			{% ifequal p articles.number %}  
+			<span class="pag_num_act pngf">{{p}}</span>
+			{% else %}  
+			<a class="pag_num pngf" href="/tag/{{tag}}/{{p}}">{{p}}</a>
+			{% endifequal %}  
+			{% endfor %}
+			{% if articles.number < articles.paginator.num_pages %}  
+			<a class="next pngf" href="/tag/{{tag}}/{{articles.next_page_number}}">&gt;</a>
+			{% endif %}  
+			</div>
 		</div>
 		{% include 'new_right.html' %}
 	</div>
